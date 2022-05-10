@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+ Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="0,179" last-zoom="0.65" max-obj-count="13"
+	 default-schema="public" default-owner="admin"
+	 layers="Default layer"
+	 active-layers="0"
+	 layer-name-colors="#000000"
+	 layer-rect-colors="#b4b4b4"
+	 show-layer-names="false" show-layer-rects="false">
+<role name="admin"
+ encrypted="true"
+ password="123456sete">
+</role>
+
+<database name="WorkOrderDB" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="User" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="369.765" y="138.765"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="firstName" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="lastName" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="cpf">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="User_pk" type="pk-constr" table="public.&quot;User&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Phone" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="165.882" y="988.235"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="DDD">
+		<type name="text" length="0"/>
+	</column>
+	<column name="DDI">
+		<type name="text" length="0"/>
+	</column>
+	<column name="number">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="Phone_pk" type="pk-constr" table="public.&quot;Phone&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Email" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="678.009" y="1018.82"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="address" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="Email_pk" type="pk-constr" table="public.&quot;Email&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="1" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1623.53" y="208.235"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<constraint name="WorkOrder_pk" type="pk-constr" table="public.&quot;WorkOrder&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Task" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1611.31" y="553.394"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="description" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="timeCost">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="materialCost">
+		<type name="money" length="0"/>
+	</column>
+	<constraint name="WorkOrderTask_pk" type="pk-constr" table="public.&quot;Task&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_Service" index="6"/>
+		<object name="id_WorkOrder" index="5"/>
+		<object name="id_device" index="4"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="Service_fk" index="3"/>
+		<object name="WorkOrder_fk" index="2"/>
+		<object name="device_fk" index="1"/>
+	</customidxs>
+</table>
+
+<table name="device" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1635.84" y="1010.77"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="model">
+		<type name="text" length="0"/>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<column name="SKU">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="device_pk" type="pk-constr" table="public.device">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="User_WorkOrder" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="945.882" y="165.611"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<constraint name="User_WorkOrder_pk" type="pk-constr" table="public.&quot;User_WorkOrder&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="User_has_many_User_WorkOrder" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;User&quot;"
+	 dst-table="public.&quot;User_WorkOrder&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="WorkOrder_has_many_User_WorkOrder" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;WorkOrder&quot;"
+	 dst-table="public.&quot;User_WorkOrder&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="device_has_many_Task" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.device"
+	 dst-table="public.&quot;Task&quot;"
+	 src-required="false" dst-required="false"/>
+
+<table name="PhoneType" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="155.294" y="1435.29"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="description" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="PhoneType_pk" type="pk-constr" table="public.&quot;PhoneType&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="PhoneType_has_many_Phone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;PhoneType&quot;"
+	 dst-table="public.&quot;Phone&quot;"
+	 src-required="false" dst-required="false"/>
+
+<table name="User_Phone" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="251.765" y="574.118"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="primary" not-null="true" default-value="false">
+		<type name="boolean" length="0"/>
+	</column>
+	<constraint name="User_Phone_pk" type="pk-constr" table="public.&quot;User_Phone&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="User_has_many_User_Phone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;User&quot;"
+	 dst-table="public.&quot;User_Phone&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="Phone_has_many_User_Phone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Phone&quot;"
+	 dst-table="public.&quot;User_Phone&quot;"
+	 src-required="false" dst-required="false"/>
+
+<table name="User_Email" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="649.231" y="607.692"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="primary" not-null="true" default-value="false">
+		<type name="boolean" length="0"/>
+	</column>
+	<constraint name="User_Email_pk" type="pk-constr" table="public.&quot;User_Email&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="User_has_many_User_Email" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;User&quot;"
+	 dst-table="public.&quot;User_Email&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="Email_has_many_User_Email" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Email&quot;"
+	 dst-table="public.&quot;User_Email&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="WorkOrder_has_many_Task" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;WorkOrder&quot;"
+	 dst-table="public.&quot;Task&quot;"
+	 src-required="false" dst-required="false"/>
+
+<table name="Service" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2189.23" y="626.154"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="description" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="estimatedTimeCost">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Time estimated, in hours, to complete the service.]]></comment>
+	</column>
+	<column name="estimatedMaterialCost">
+		<type name="money" length="0"/>
+		<comment><![CDATA[Cost in materials to complete the service.]]></comment>
+	</column>
+	<constraint name="Service_pk" type="pk-constr" table="public.&quot;Service&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="Service_has_many_Task" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Service&quot;"
+	 dst-table="public.&quot;Task&quot;"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>
