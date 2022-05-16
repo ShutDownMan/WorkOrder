@@ -3,19 +3,40 @@
 -- PostgreSQL version: 14.0
 -- Project Site: pgmodeler.io
 -- Model Author: Jedson Gabriel
+-- object: adm | type: ROLE --
+-- DROP ROLE IF EXISTS adm;
+CREATE ROLE adm WITH 
+	SUPERUSER
+	CREATEDB
+	CREATEROLE
+	INHERIT
+	LOGIN
+	ENCRYPTED PASSWORD '123456sete';
+-- ddl-end --
 
--- object: public."User" | type: TABLE --
--- DROP TABLE IF EXISTS public."User" CASCADE;
-CREATE TABLE public."User" (
-	id serial NOT NULL,
+
+-- Database creation must be performed outside a multi lined SQL file. 
+-- These commands were put in this file only as a convenience.
+-- 
+-- object: "WorkOrderDB" | type: DATABASE --
+-- DROP DATABASE IF EXISTS "WorkOrderDB";
+CREATE DATABASE "WorkOrderDB";
+-- ddl-end --
+
+
+-- object: public."Client" | type: TABLE --
+-- DROP TABLE IF EXISTS public."Client" CASCADE;
+CREATE TABLE public."Client" (
+	id uuid NOT NULL,
 	name text NOT NULL,
 	"firstName" text NOT NULL,
 	"lastName" text NOT NULL,
 	cpf text,
+	active boolean NOT NULL DEFAULT true,
 	CONSTRAINT "User_pk" PRIMARY KEY (id)
 );
 -- ddl-end --
-ALTER TABLE public."User" OWNER TO postgres;
+ALTER TABLE public."Client" OWNER TO adm;
 -- ddl-end --
 
 -- object: public."Phone" | type: TABLE --
@@ -24,12 +45,13 @@ CREATE TABLE public."Phone" (
 	id serial NOT NULL,
 	"DDD" text,
 	"DDI" text,
-	number text,
+	number text NOT NULL,
 	"id_PhoneType" integer,
+	"id_Client" uuid,
 	CONSTRAINT "Phone_pk" PRIMARY KEY (id)
 );
 -- ddl-end --
-ALTER TABLE public."Phone" OWNER TO postgres;
+ALTER TABLE public."Phone" OWNER TO adm;
 -- ddl-end --
 
 -- object: public."Email" | type: TABLE --
@@ -37,20 +59,23 @@ ALTER TABLE public."Phone" OWNER TO postgres;
 CREATE TABLE public."Email" (
 	id serial NOT NULL,
 	address text NOT NULL,
+	"id_Client" uuid,
 	CONSTRAINT "Email_pk" PRIMARY KEY (id)
 );
 -- ddl-end --
-ALTER TABLE public."Email" OWNER TO postgres;
+ALTER TABLE public."Email" OWNER TO adm;
 -- ddl-end --
 
 -- object: public."WorkOrder" | type: TABLE --
 -- DROP TABLE IF EXISTS public."WorkOrder" CASCADE;
 CREATE TABLE public."WorkOrder" (
-	id serial NOT NULL,
+	id uuid NOT NULL,
+	"id_Client" uuid,
+	"id_WorkOrderStatus" integer,
 	CONSTRAINT "WorkOrder_pk" PRIMARY KEY (id)
 );
 -- ddl-end --
-ALTER TABLE public."WorkOrder" OWNER TO postgres;
+ALTER TABLE public."WorkOrder" OWNER TO adm;
 -- ddl-end --
 
 -- object: public."Task" | type: TABLE --
@@ -61,12 +86,12 @@ CREATE TABLE public."Task" (
 	"timeCost" integer,
 	"materialCost" money,
 	id_device integer,
-	"id_WorkOrder" integer,
+	"id_WorkOrder" uuid,
 	"id_Service" integer,
 	CONSTRAINT "WorkOrderTask_pk" PRIMARY KEY (id)
 );
 -- ddl-end --
-ALTER TABLE public."Task" OWNER TO postgres;
+ALTER TABLE public."Task" OWNER TO adm;
 -- ddl-end --
 
 -- object: public.device | type: TABLE --
@@ -79,33 +104,7 @@ CREATE TABLE public.device (
 	CONSTRAINT device_pk PRIMARY KEY (id)
 );
 -- ddl-end --
-ALTER TABLE public.device OWNER TO postgres;
--- ddl-end --
-
--- object: public."User_WorkOrder" | type: TABLE --
--- DROP TABLE IF EXISTS public."User_WorkOrder" CASCADE;
-CREATE TABLE public."User_WorkOrder" (
-	id serial NOT NULL,
-	"id_User" integer,
-	"id_WorkOrder" integer,
-	CONSTRAINT "User_WorkOrder_pk" PRIMARY KEY (id)
-);
--- ddl-end --
-ALTER TABLE public."User_WorkOrder" OWNER TO postgres;
--- ddl-end --
-
--- object: "User_fk" | type: CONSTRAINT --
--- ALTER TABLE public."User_WorkOrder" DROP CONSTRAINT IF EXISTS "User_fk" CASCADE;
-ALTER TABLE public."User_WorkOrder" ADD CONSTRAINT "User_fk" FOREIGN KEY ("id_User")
-REFERENCES public."User" (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
--- ddl-end --
-
--- object: "WorkOrder_fk" | type: CONSTRAINT --
--- ALTER TABLE public."User_WorkOrder" DROP CONSTRAINT IF EXISTS "WorkOrder_fk" CASCADE;
-ALTER TABLE public."User_WorkOrder" ADD CONSTRAINT "WorkOrder_fk" FOREIGN KEY ("id_WorkOrder")
-REFERENCES public."WorkOrder" (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE public.device OWNER TO adm;
 -- ddl-end --
 
 -- object: device_fk | type: CONSTRAINT --
@@ -123,67 +122,13 @@ CREATE TABLE public."PhoneType" (
 	CONSTRAINT "PhoneType_pk" PRIMARY KEY (id)
 );
 -- ddl-end --
-ALTER TABLE public."PhoneType" OWNER TO postgres;
+ALTER TABLE public."PhoneType" OWNER TO adm;
 -- ddl-end --
 
 -- object: "PhoneType_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."Phone" DROP CONSTRAINT IF EXISTS "PhoneType_fk" CASCADE;
 ALTER TABLE public."Phone" ADD CONSTRAINT "PhoneType_fk" FOREIGN KEY ("id_PhoneType")
 REFERENCES public."PhoneType" (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
--- ddl-end --
-
--- object: public."User_Phone" | type: TABLE --
--- DROP TABLE IF EXISTS public."User_Phone" CASCADE;
-CREATE TABLE public."User_Phone" (
-	id serial NOT NULL,
-	"primary" boolean NOT NULL DEFAULT false,
-	"id_User" integer,
-	"id_Phone" integer,
-	CONSTRAINT "User_Phone_pk" PRIMARY KEY (id)
-);
--- ddl-end --
-ALTER TABLE public."User_Phone" OWNER TO postgres;
--- ddl-end --
-
--- object: "User_fk" | type: CONSTRAINT --
--- ALTER TABLE public."User_Phone" DROP CONSTRAINT IF EXISTS "User_fk" CASCADE;
-ALTER TABLE public."User_Phone" ADD CONSTRAINT "User_fk" FOREIGN KEY ("id_User")
-REFERENCES public."User" (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
--- ddl-end --
-
--- object: "Phone_fk" | type: CONSTRAINT --
--- ALTER TABLE public."User_Phone" DROP CONSTRAINT IF EXISTS "Phone_fk" CASCADE;
-ALTER TABLE public."User_Phone" ADD CONSTRAINT "Phone_fk" FOREIGN KEY ("id_Phone")
-REFERENCES public."Phone" (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
--- ddl-end --
-
--- object: public."User_Email" | type: TABLE --
--- DROP TABLE IF EXISTS public."User_Email" CASCADE;
-CREATE TABLE public."User_Email" (
-	id serial NOT NULL,
-	"primary" boolean NOT NULL DEFAULT false,
-	"id_User" integer,
-	"id_Email" integer,
-	CONSTRAINT "User_Email_pk" PRIMARY KEY (id)
-);
--- ddl-end --
-ALTER TABLE public."User_Email" OWNER TO postgres;
--- ddl-end --
-
--- object: "User_fk" | type: CONSTRAINT --
--- ALTER TABLE public."User_Email" DROP CONSTRAINT IF EXISTS "User_fk" CASCADE;
-ALTER TABLE public."User_Email" ADD CONSTRAINT "User_fk" FOREIGN KEY ("id_User")
-REFERENCES public."User" (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
--- ddl-end --
-
--- object: "Email_fk" | type: CONSTRAINT --
--- ALTER TABLE public."User_Email" DROP CONSTRAINT IF EXISTS "Email_fk" CASCADE;
-ALTER TABLE public."User_Email" ADD CONSTRAINT "Email_fk" FOREIGN KEY ("id_Email")
-REFERENCES public."Email" (id) MATCH FULL
 ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --
 
@@ -208,7 +153,7 @@ COMMENT ON COLUMN public."Service"."estimatedTimeCost" IS E'Time estimated, in h
 -- ddl-end --
 COMMENT ON COLUMN public."Service"."estimatedMaterialCost" IS E'Cost in materials to complete the service.';
 -- ddl-end --
-ALTER TABLE public."Service" OWNER TO postgres;
+ALTER TABLE public."Service" OWNER TO adm;
 -- ddl-end --
 
 -- object: "Service_fk" | type: CONSTRAINT --
@@ -218,4 +163,53 @@ REFERENCES public."Service" (id) MATCH FULL
 ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --
 
+-- object: "Client_fk" | type: CONSTRAINT --
+-- ALTER TABLE public."WorkOrder" DROP CONSTRAINT IF EXISTS "Client_fk" CASCADE;
+ALTER TABLE public."WorkOrder" ADD CONSTRAINT "Client_fk" FOREIGN KEY ("id_Client")
+REFERENCES public."Client" (id) MATCH FULL
+ON DELETE SET NULL ON UPDATE CASCADE;
+-- ddl-end --
 
+-- object: public."WorkOrderStatus" | type: TABLE --
+-- DROP TABLE IF EXISTS public."WorkOrderStatus" CASCADE;
+CREATE TABLE public."WorkOrderStatus" (
+	id serial NOT NULL,
+	description text NOT NULL,
+	CONSTRAINT "WorkOrderStatus_pk" PRIMARY KEY (id)
+);
+-- ddl-end --
+ALTER TABLE public."WorkOrderStatus" OWNER TO adm;
+-- ddl-end --
+
+-- object: "WorkOrderStatus_fk" | type: CONSTRAINT --
+-- ALTER TABLE public."WorkOrder" DROP CONSTRAINT IF EXISTS "WorkOrderStatus_fk" CASCADE;
+ALTER TABLE public."WorkOrder" ADD CONSTRAINT "WorkOrderStatus_fk" FOREIGN KEY ("id_WorkOrderStatus")
+REFERENCES public."WorkOrderStatus" (id) MATCH FULL
+ON DELETE SET NULL ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "Client_fk" | type: CONSTRAINT --
+-- ALTER TABLE public."Phone" DROP CONSTRAINT IF EXISTS "Client_fk" CASCADE;
+ALTER TABLE public."Phone" ADD CONSTRAINT "Client_fk" FOREIGN KEY ("id_Client")
+REFERENCES public."Client" (id) MATCH FULL
+ON DELETE SET NULL ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "Phone_uq" | type: CONSTRAINT --
+-- ALTER TABLE public."Phone" DROP CONSTRAINT IF EXISTS "Phone_uq" CASCADE;
+ALTER TABLE public."Phone" ADD CONSTRAINT "Phone_uq" UNIQUE ("id_Client");
+-- ddl-end --
+
+-- object: "Client_fk" | type: CONSTRAINT --
+-- ALTER TABLE public."Email" DROP CONSTRAINT IF EXISTS "Client_fk" CASCADE;
+ALTER TABLE public."Email" ADD CONSTRAINT "Client_fk" FOREIGN KEY ("id_Client")
+REFERENCES public."Client" (id) MATCH FULL
+ON DELETE SET NULL ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "Email_uq" | type: CONSTRAINT --
+-- ALTER TABLE public."Email" DROP CONSTRAINT IF EXISTS "Email_uq" CASCADE;
+ALTER TABLE public."Email" ADD CONSTRAINT "Email_uq" UNIQUE ("id_Client");
+-- ddl-end --
+
+INSERT INTO "PhoneType" (description) VALUES ('Celular'), ('Telefone Fixo');

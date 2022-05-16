@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,84 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Email {
+  id        Int     @id(map: "Email_pk") @default(autoincrement())
+  address   String
+  id_Client String? @unique(map: "Email_uq") @db.Uuid
+  Client    Client? @relation(fields: [id_Client], references: [id], map: "Client_fk")
+}
+
+model Phone {
+  id           Int        @id(map: "Phone_pk") @default(autoincrement())
+  DDD          String?
+  DDI          String?
+  number       String
+  id_PhoneType Int?
+  id_Client    String?    @unique(map: "Phone_uq") @db.Uuid
+  Client       Client?    @relation(fields: [id_Client], references: [id], map: "Client_fk")
+  PhoneType    PhoneType? @relation(fields: [id_PhoneType], references: [id], map: "PhoneType_fk")
+}
+
+model PhoneType {
+  id          Int     @id(map: "PhoneType_pk") @default(autoincrement())
+  description String
+  Phone       Phone[]
+}
+
+model Service {
+  id                    Int      @id(map: "Service_pk") @default(autoincrement())
+  description           String
+  estimatedTimeCost     Int?
+  estimatedMaterialCost Decimal? @db.Money
+  Task                  Task[]
+}
+
+model Task {
+  id           Int        @id(map: "WorkOrderTask_pk") @default(autoincrement())
+  description  String
+  timeCost     Int?
+  materialCost Decimal?   @db.Money
+  id_device    Int?
+  id_WorkOrder String?    @db.Uuid
+  id_Service   Int?
+  Service      Service?   @relation(fields: [id_Service], references: [id], map: "Service_fk")
+  WorkOrder    WorkOrder? @relation(fields: [id_WorkOrder], references: [id], map: "WorkOrder_fk")
+  device       device?    @relation(fields: [id_device], references: [id], map: "device_fk")
+}
+
+model WorkOrder {
+  id                 String           @id(map: "WorkOrder_pk") @db.Uuid
+  id_Client          String?          @db.Uuid
+  id_WorkOrderStatus Int?
+  Client             Client?          @relation(fields: [id_Client], references: [id], map: "Client_fk")
+  WorkOrderStatus    WorkOrderStatus? @relation(fields: [id_WorkOrderStatus], references: [id], map: "WorkOrderStatus_fk")
+  Task               Task[]
+}
+
+model device {
+  id          Int     @id(map: "device_pk") @default(autoincrement())
+  model       String?
+  description String?
+  SKU         String?
+  Task        Task[]
+}
+
+model WorkOrderStatus {
+  id          Int         @id(map: "WorkOrderStatus_pk") @default(autoincrement())
+  description String
+  WorkOrder   WorkOrder[]
+}
+
+model Client {
+  id        String      @id(map: "User_pk") @db.Uuid
+  name      String
+  firstName String
+  lastName  String
+  cpf       String?
+  active    Boolean     @default(true)
+  Email     Email?
+  Phone     Phone?
+  WorkOrder WorkOrder[]
 }

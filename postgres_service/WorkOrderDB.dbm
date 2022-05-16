@@ -3,14 +3,19 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="0,179" last-zoom="0.65" max-obj-count="13"
-	 default-schema="public" default-owner="admin"
+<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="0,0" last-zoom="0.85" max-obj-count="10"
+	 default-schema="public" default-owner="adm"
 	 layers="Default layer"
 	 active-layers="0"
 	 layer-name-colors="#000000"
 	 layer-rect-colors="#b4b4b4"
 	 show-layer-names="false" show-layer-rects="false">
-<role name="admin"
+<role name="adm"
+ superuser="true"
+ createdb="true"
+ createrole="true"
+ inherit="true"
+ login="true"
  encrypted="true"
  password="123456sete">
 </role>
@@ -21,12 +26,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
 </schema>
 
-<table name="User" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+<table name="Client" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="369.765" y="138.765"/>
+	<role name="adm"/>
+	<position x="360" y="140"/>
 	<column name="id" not-null="true">
-		<type name="serial" length="0"/>
+		<type name="uuid" length="0"/>
 	</column>
 	<column name="name" not-null="true">
 		<type name="text" length="0"/>
@@ -40,15 +45,18 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="cpf">
 		<type name="text" length="0"/>
 	</column>
-	<constraint name="User_pk" type="pk-constr" table="public.&quot;User&quot;">
+	<column name="active" not-null="true" default-value="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<constraint name="User_pk" type="pk-constr" table="public.&quot;Client&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="Phone" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+<table name="Phone" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="165.882" y="988.235"/>
+	<role name="adm"/>
+	<position x="200" y="520"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -58,18 +66,26 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="DDI">
 		<type name="text" length="0"/>
 	</column>
-	<column name="number">
+	<column name="number" not-null="true">
 		<type name="text" length="0"/>
 	</column>
 	<constraint name="Phone_pk" type="pk-constr" table="public.&quot;Phone&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_PhoneType" index="4"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="PhoneType_fk" index="1"/>
+	</customidxs>
 </table>
 
-<table name="Email" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+<table name="Email" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
 	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="678.009" y="1018.82"/>
+	<role name="adm"/>
+	<position x="660" y="520"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -81,22 +97,32 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="1" z-value="0">
+<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
 	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="1623.53" y="208.235"/>
+	<role name="adm"/>
+	<position x="1020" y="140"/>
 	<column name="id" not-null="true">
-		<type name="serial" length="0"/>
+		<type name="uuid" length="0"/>
 	</column>
 	<constraint name="WorkOrder_pk" type="pk-constr" table="public.&quot;WorkOrder&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_Client" index="1"/>
+		<object name="id_WorkOrderStatus" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="Client_fk" index="1"/>
+		<object name="WorkOrderStatus_fk" index="2"/>
+	</customidxs>
 </table>
 
 <table name="Task" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
 	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="1611.31" y="553.394"/>
+	<role name="adm"/>
+	<position x="1040" y="580"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -128,8 +154,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <table name="device" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
 	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="1635.84" y="1010.77"/>
+	<role name="adm"/>
+	<position x="1060" y="1040"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -147,34 +173,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="User_WorkOrder" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
-	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="945.882" y="165.611"/>
-	<column name="id" not-null="true">
-		<type name="serial" length="0"/>
-	</column>
-	<constraint name="User_WorkOrder_pk" type="pk-constr" table="public.&quot;User_WorkOrder&quot;">
-		<columns names="id" ref-type="src-columns"/>
-	</constraint>
-</table>
-
-<relationship name="User_has_many_User_WorkOrder" type="rel1n" layers="0"
-	 src-col-pattern="{sc}_{st}"
-	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
-	 src-fk-pattern="{st}_fk"
-	 src-table="public.&quot;User&quot;"
-	 dst-table="public.&quot;User_WorkOrder&quot;"
-	 src-required="false" dst-required="false"/>
-
-<relationship name="WorkOrder_has_many_User_WorkOrder" type="rel1n" layers="0"
-	 src-col-pattern="{sc}_{st}"
-	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
-	 src-fk-pattern="{st}_fk"
-	 src-table="public.&quot;WorkOrder&quot;"
-	 dst-table="public.&quot;User_WorkOrder&quot;"
-	 src-required="false" dst-required="false"/>
-
 <relationship name="device_has_many_Task" type="rel1n" layers="0"
 	 src-col-pattern="{sc}_{st}"
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
@@ -185,8 +183,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <table name="PhoneType" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
 	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="155.294" y="1435.29"/>
+	<role name="adm"/>
+	<position x="180" y="980"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -206,68 +204,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.&quot;Phone&quot;"
 	 src-required="false" dst-required="false"/>
 
-<table name="User_Phone" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
-	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="251.765" y="574.118"/>
-	<column name="id" not-null="true">
-		<type name="serial" length="0"/>
-	</column>
-	<column name="primary" not-null="true" default-value="false">
-		<type name="boolean" length="0"/>
-	</column>
-	<constraint name="User_Phone_pk" type="pk-constr" table="public.&quot;User_Phone&quot;">
-		<columns names="id" ref-type="src-columns"/>
-	</constraint>
-</table>
-
-<relationship name="User_has_many_User_Phone" type="rel1n" layers="0"
-	 src-col-pattern="{sc}_{st}"
-	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
-	 src-fk-pattern="{st}_fk"
-	 src-table="public.&quot;User&quot;"
-	 dst-table="public.&quot;User_Phone&quot;"
-	 src-required="false" dst-required="false"/>
-
-<relationship name="Phone_has_many_User_Phone" type="rel1n" layers="0"
-	 src-col-pattern="{sc}_{st}"
-	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
-	 src-fk-pattern="{st}_fk"
-	 src-table="public.&quot;Phone&quot;"
-	 dst-table="public.&quot;User_Phone&quot;"
-	 src-required="false" dst-required="false"/>
-
-<table name="User_Email" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
-	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="649.231" y="607.692"/>
-	<column name="id" not-null="true">
-		<type name="serial" length="0"/>
-	</column>
-	<column name="primary" not-null="true" default-value="false">
-		<type name="boolean" length="0"/>
-	</column>
-	<constraint name="User_Email_pk" type="pk-constr" table="public.&quot;User_Email&quot;">
-		<columns names="id" ref-type="src-columns"/>
-	</constraint>
-</table>
-
-<relationship name="User_has_many_User_Email" type="rel1n" layers="0"
-	 src-col-pattern="{sc}_{st}"
-	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
-	 src-fk-pattern="{st}_fk"
-	 src-table="public.&quot;User&quot;"
-	 dst-table="public.&quot;User_Email&quot;"
-	 src-required="false" dst-required="false"/>
-
-<relationship name="Email_has_many_User_Email" type="rel1n" layers="0"
-	 src-col-pattern="{sc}_{st}"
-	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
-	 src-fk-pattern="{st}_fk"
-	 src-table="public.&quot;Email&quot;"
-	 dst-table="public.&quot;User_Email&quot;"
-	 src-required="false" dst-required="false"/>
-
 <relationship name="WorkOrder_has_many_Task" type="rel1n" layers="0"
 	 src-col-pattern="{sc}_{st}"
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
@@ -278,8 +214,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <table name="Service" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
 	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="2189.23" y="626.154"/>
+	<role name="adm"/>
+	<position x="1600" y="640"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -305,6 +241,57 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-fk-pattern="{st}_fk"
 	 src-table="public.&quot;Service&quot;"
 	 dst-table="public.&quot;Task&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="User_has_many_WorkOrder" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Client&quot;"
+	 dst-table="public.&quot;WorkOrder&quot;"
+	 src-required="false" dst-required="false"/>
+
+<table name="WorkOrderStatus" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="adm"/>
+	<position x="1620" y="180"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="description" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="WorkOrderStatus_pk" type="pk-constr" table="public.&quot;WorkOrderStatus&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="WorkOrderStatus_has_many_WorkOrder" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;WorkOrderStatus&quot;"
+	 dst-table="public.&quot;WorkOrder&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="Phone_has_one_User" type="rel11" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Client&quot;"
+	 dst-table="public.&quot;Phone&quot;"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="9.14114" y="7.40004"/>
+	</label>
+</relationship>
+
+<relationship name="Email_has_one_User" type="rel11" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Client&quot;"
+	 dst-table="public.&quot;Email&quot;"
 	 src-required="false" dst-required="false"/>
 
 </dbmodel>
