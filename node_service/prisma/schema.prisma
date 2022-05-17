@@ -65,9 +65,11 @@ model WorkOrder {
 
 model device {
   id          Int     @id(map: "device_pk") @default(autoincrement())
-  model       String?
+  brand       String
+  model       String
   description String?
-  SKU         String?
+  sku         String?
+  photoURL    String?
   Task        Task[]
 }
 

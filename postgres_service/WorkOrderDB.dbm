@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="0,78" last-zoom="0.85" max-obj-count="10"
+<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="0,324" last-zoom="0.85" max-obj-count="10"
 	 default-schema="public" default-owner="adm"
 	 layers="Default layer"
 	 active-layers="0"
@@ -168,21 +168,27 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</customidxs>
 </table>
 
-<table name="device" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+<table name="device" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
 	<position x="1060" y="1040"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
-	<column name="model">
+	<column name="brand" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="model" not-null="true">
 		<type name="text" length="0"/>
 	</column>
 	<column name="description">
 		<type name="text" length="0"/>
 	</column>
-	<column name="SKU">
+	<column name="sku">
 		<type name="text" length="0"/>
+	</column>
+	<column name="photoURL">
+		<type name="smallint" length="0"/>
 	</column>
 	<constraint name="device_pk" type="pk-constr" table="public.device">
 		<columns names="id" ref-type="src-columns"/>

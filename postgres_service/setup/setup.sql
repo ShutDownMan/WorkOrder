@@ -3,26 +3,6 @@
 -- PostgreSQL version: 14.0
 -- Project Site: pgmodeler.io
 -- Model Author: Jedson Gabriel
--- object: adm | type: ROLE --
--- DROP ROLE IF EXISTS adm;
-CREATE ROLE adm WITH 
-	SUPERUSER
-	CREATEDB
-	CREATEROLE
-	INHERIT
-	LOGIN
-	ENCRYPTED PASSWORD '123456sete';
--- ddl-end --
-
-
--- Database creation must be performed outside a multi lined SQL file. 
--- These commands were put in this file only as a convenience.
--- 
--- object: "WorkOrderDB" | type: DATABASE --
--- DROP DATABASE IF EXISTS "WorkOrderDB";
-CREATE DATABASE "WorkOrderDB";
--- ddl-end --
-
 
 -- object: public."Client" | type: TABLE --
 -- DROP TABLE IF EXISTS public."Client" CASCADE;
@@ -46,6 +26,7 @@ CREATE TABLE public."Phone" (
 	"DDD" text,
 	"DDI" text,
 	number text NOT NULL,
+	"primary" boolean,
 	"id_PhoneType" integer,
 	"id_Client" uuid,
 	CONSTRAINT "Phone_pk" PRIMARY KEY (id)
@@ -59,6 +40,7 @@ ALTER TABLE public."Phone" OWNER TO adm;
 CREATE TABLE public."Email" (
 	id serial NOT NULL,
 	address text NOT NULL,
+	"primary" boolean,
 	"id_Client" uuid,
 	CONSTRAINT "Email_pk" PRIMARY KEY (id)
 );
@@ -98,9 +80,11 @@ ALTER TABLE public."Task" OWNER TO adm;
 -- DROP TABLE IF EXISTS public.device CASCADE;
 CREATE TABLE public.device (
 	id serial NOT NULL,
-	model text,
+	brand text NOT NULL,
+	model text NOT NULL,
 	description text,
-	"SKU" text,
+	sku text,
+	"photoURL" text,
 	CONSTRAINT device_pk PRIMARY KEY (id)
 );
 -- ddl-end --
@@ -195,11 +179,6 @@ REFERENCES public."Client" (id) MATCH FULL
 ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --
 
--- object: "Phone_uq" | type: CONSTRAINT --
--- ALTER TABLE public."Phone" DROP CONSTRAINT IF EXISTS "Phone_uq" CASCADE;
-ALTER TABLE public."Phone" ADD CONSTRAINT "Phone_uq" UNIQUE ("id_Client");
--- ddl-end --
-
 -- object: "Client_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."Email" DROP CONSTRAINT IF EXISTS "Client_fk" CASCADE;
 ALTER TABLE public."Email" ADD CONSTRAINT "Client_fk" FOREIGN KEY ("id_Client")
@@ -207,9 +186,5 @@ REFERENCES public."Client" (id) MATCH FULL
 ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --
 
--- object: "Email_uq" | type: CONSTRAINT --
--- ALTER TABLE public."Email" DROP CONSTRAINT IF EXISTS "Email_uq" CASCADE;
-ALTER TABLE public."Email" ADD CONSTRAINT "Email_uq" UNIQUE ("id_Client");
--- ddl-end --
 
 INSERT INTO "PhoneType" (description) VALUES ('Celular'), ('Telefone Fixo');
