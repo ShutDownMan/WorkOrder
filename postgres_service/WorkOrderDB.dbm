@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="0,0" last-zoom="0.85" max-obj-count="10"
+<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="0,78" last-zoom="0.85" max-obj-count="10"
 	 default-schema="public" default-owner="adm"
 	 layers="Default layer"
 	 active-layers="0"
@@ -53,7 +53,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="Phone" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+<table name="Phone" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
 	<position x="200" y="520"/>
@@ -69,20 +69,25 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="number" not-null="true">
 		<type name="text" length="0"/>
 	</column>
+	<column name="primary">
+		<type name="boolean" length="0"/>
+	</column>
 	<constraint name="Phone_pk" type="pk-constr" table="public.&quot;Phone&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 
 	<customidxs object-type="column">
-		<object name="id_PhoneType" index="4"/>
+		<object name="id_Client" index="6"/>
+		<object name="id_PhoneType" index="5"/>
 	</customidxs>
 
 	<customidxs object-type="constraint">
+		<object name="Client_fk" index="2"/>
 		<object name="PhoneType_fk" index="1"/>
 	</customidxs>
 </table>
 
-<table name="Email" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+<table name="Email" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
 	<position x="660" y="520"/>
@@ -92,9 +97,20 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="address" not-null="true">
 		<type name="text" length="0"/>
 	</column>
+	<column name="primary">
+		<type name="boolean" length="0"/>
+	</column>
 	<constraint name="Email_pk" type="pk-constr" table="public.&quot;Email&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_Client" index="3"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="Client_fk" index="1"/>
+	</customidxs>
 </table>
 
 <table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
@@ -274,19 +290,15 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.&quot;WorkOrder&quot;"
 	 src-required="false" dst-required="false"/>
 
-<relationship name="Phone_has_one_User" type="rel11" layers="0"
+<relationship name="Client_has_many_Phone" type="rel1n" layers="0"
 	 src-col-pattern="{sc}_{st}"
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
 	 src-fk-pattern="{st}_fk"
 	 src-table="public.&quot;Client&quot;"
 	 dst-table="public.&quot;Phone&quot;"
-	 src-required="false" dst-required="false">
-	<label ref-type="name-label">
-		<position x="9.14114" y="7.40004"/>
-	</label>
-</relationship>
+	 src-required="false" dst-required="false"/>
 
-<relationship name="Email_has_one_User" type="rel11" layers="0"
+<relationship name="Client_has_many_Email" type="rel1n" layers="0"
 	 src-col-pattern="{sc}_{st}"
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
 	 src-fk-pattern="{st}_fk"
