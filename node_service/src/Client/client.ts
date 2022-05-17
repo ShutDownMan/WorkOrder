@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import superstruct, { object, string, nullable, size, refine, omit } from 'superstruct'
+import { assert, object, string, nullable, optional, size, refine, omit } from 'superstruct'
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
 import { Prisma } from '@prisma/client'
@@ -18,21 +18,21 @@ const ClientGetID = object({
 const ClientInsertModel = object({
     firstName: string(),
     lastName: string(),
-    cellphone: refine(string(), 'telephone', (v: string) => isTelephoneNumber(v)),
-    telephone: nullable(refine(string(), 'telephone', (v: string) => isTelephoneNumber(v))),
-    email: nullable(refine(string(), 'email', (v: string) => isEmail(v))),
+    cellphone: refine(string(), 'cellphone', (v: string) => isTelephoneNumber(v)),
+    telephone: optional(refine(string(), 'telephone', (v: string) => isTelephoneNumber(v))),
+    email: optional(refine(string(), 'email', (v: string) => isEmail(v))),
     cpf: refine(string(), 'cpf', (v: string) => isCPF(v)),
 });
 
 /// Client model for patching
 const ClientPatchingModel = object({
     id: string(),
-    firstName: string(),
-    lastName: string(),
-    cellphone: refine(string(), 'telephone', (v: string) => isTelephoneNumber(v)),
-    telephone: nullable(refine(string(), 'telephone', (v: string) => isTelephoneNumber(v))),
-    email: nullable(refine(string(), 'email', (v: string) => isEmail(v))),
-    cpf: refine(string(), 'cpf', (v: string) => isCPF(v)),
+    firstName: optional(string()),
+    lastName: optional(string()),
+    cellphone: optional(refine(string(), 'cellphone', (v: string) => isTelephoneNumber(v))),
+    telephone: optional(refine(string(), 'telephone', (v: string) => isTelephoneNumber(v))),
+    email: optional(refine(string(), 'email', (v: string) => isEmail(v))),
+    cpf: optional(refine(string(), 'cpf', (v: string) => isCPF(v))),
 });
 
 export async function getClientByIDHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
@@ -41,7 +41,7 @@ export async function getClientByIDHandler(req: Request, res: Response, next: Ne
     let reqBody = req.body;
     /// validate input
     try {
-        superstruct.assert(reqBody, ClientGetID);
+        assert(reqBody, ClientGetID);
     } catch (error) {
         console.log("Error trying to get client by ID: ", error);
 
@@ -59,6 +59,10 @@ export async function getClientByIDHandler(req: Request, res: Response, next: Ne
         let queriedClient = await prisma.client.findUnique({
             where: {
                 id: reqBody.id
+            },
+            include: {
+                Email: true,
+                Phone: true,
             }
         });
 
@@ -72,7 +76,7 @@ export async function getClientByIDHandler(req: Request, res: Response, next: Ne
             return res.status(404).json(errorRes)
         }
 
-        return res.status(200).json({ queriedClient });
+        return res.status(200).json(queriedClient);
     } catch (error) {
         console.log("Error trying to find client by ID: ", error);
 
@@ -90,9 +94,8 @@ export async function postClientHandler(req: Request, res: Response, next: NextF
 
     /// assert the input is valid
     let postedClient = req.body;
-
     try {
-        superstruct.assert(postedClient, ClientInsertModel);
+        assert(postedClient, ClientInsertModel);
     } catch (error) {
         console.log("Error trying to insert new client: ", error);
 
@@ -176,7 +179,7 @@ export async function patchClientByIDHandler(req: Request, res: Response, next: 
     let reqBody = req.body;
     /// validate input
     try {
-        superstruct.assert(reqBody, ClientPatchingModel);
+        assert(reqBody, ClientPatchingModel);
     } catch (error) {
         console.log("Error trying to get client by ID: ", error);
 
@@ -205,41 +208,51 @@ export async function patchClientByIDHandler(req: Request, res: Response, next: 
 
         /// update email if needed
         if (userUpdates.email) {
-            let emailUpdate = prisma.email.update({
+            let emailDelete = prisma.email.deleteMany({
                 where: {
                     id_Client: id
-                },
+                }
+            });
+            let emailInsert = prisma.email.create({
                 data: {
+                    id_Client: id,
                     address: userUpdates.email
                 }
             });
-            transactions.push(emailUpdate);
+
+            transactions.push(emailDelete, emailInsert);
         }
 
         /// update cellphone if needed
         if (userUpdates.cellphone) {
-            let cellphoneUpdate = prisma.phone.update({
+            let cellphoneDelete = prisma.phone.deleteMany({
                 where: {
                     id_Client: id
-                },
+                }
+            });
+            let cellphoneInsert = prisma.phone.create({
                 data: {
+                    id_Client: id,
                     number: userUpdates.cellphone
                 }
             });
-            transactions.push(cellphoneUpdate);
+            transactions.push(cellphoneDelete, cellphoneInsert);
         }
 
         /// update telephone if needed
         if (userUpdates.telephone) {
-            let telephoneUpdate = prisma.phone.update({
+            let telephoneDelete = prisma.phone.deleteMany({
                 where: {
                     id_Client: id
-                },
+                }
+            });
+            let telephoneInsert = prisma.phone.create({
                 data: {
+                    id_Client: id,
                     number: userUpdates.telephone
                 }
             });
-            transactions.push(telephoneUpdate);
+            transactions.push(telephoneDelete, telephoneInsert);
         }
 
         /// update client in the database
@@ -284,7 +297,7 @@ export async function deleteClientByIDHandler(req: Request, res: Response, next:
     let reqBody = req.body;
     /// validate input
     try {
-        superstruct.assert(reqBody, ClientGetID);
+        assert(reqBody, ClientGetID);
     } catch (error) {
         console.log("Error trying to get client by ID: ", error);
 
@@ -299,14 +312,14 @@ export async function deleteClientByIDHandler(req: Request, res: Response, next:
     /// query database for client
     try {
         /// delete phone
-        let deletePhone = prisma.phone.delete({
+        let deletePhone = prisma.phone.deleteMany({
             where: {
                 id_Client: reqBody.id
             }
         });
 
         /// delete email
-        let deleteEmail = prisma.email.delete({
+        let deleteEmail = prisma.email.deleteMany({
             where: {
                 id_Client: reqBody.id
             }

@@ -1,14 +1,29 @@
 import { Request, Response, NextFunction } from "express";
-import { assert, object, string, nullable, size, refine } from 'superstruct'
+import { assert, object, string, nullable, size, refine, optional } from 'superstruct'
 import { HandlerError } from "../HandlerError/handler-error";
+
+/// model for device get by id
+const DeviceGetID = object({
+    id: string(),
+});
 
 /// create model
 const DeviceInsertModel = object({
     brand: string(),
     model: string(),
-    photoURL: nullable(string()),
-    SKU: nullable(string()),
-    descricao: nullable(string()),
+    photoURL: optional(string()),
+    SKU: optional(string()),
+    descricao: optional(string()),
+});
+
+/// Device model for patching
+const DevicePatchingModel = object({
+    id: string(),
+    brand: optional(string()),
+    model: optional(string()),
+    photoURL: optional(string()),
+    SKU: optional(string()),
+    descricao: optional(string()),
 });
 
 export async function getDeviceByIDHandler(req: Request, res: Response, next: NextFunction): Promise<any> {

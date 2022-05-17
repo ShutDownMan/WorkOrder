@@ -8,10 +8,11 @@ datasource db {
 }
 
 model Email {
-  id        Int     @id(map: "Email_pk") @default(autoincrement())
+  id        Int      @id(map: "Email_pk") @default(autoincrement())
   address   String
-  id_Client String? @unique(map: "Email_uq") @db.Uuid
-  Client    Client? @relation(fields: [id_Client], references: [id], map: "Client_fk")
+  primary   Boolean?
+  id_Client String?  @db.Uuid
+  Client    Client?  @relation(fields: [id_Client], references: [id], map: "Client_fk")
 }
 
 model Phone {
@@ -19,8 +20,9 @@ model Phone {
   DDD          String?
   DDI          String?
   number       String
+  primary      Boolean?
   id_PhoneType Int?
-  id_Client    String?    @unique(map: "Phone_uq") @db.Uuid
+  id_Client    String?    @db.Uuid
   Client       Client?    @relation(fields: [id_Client], references: [id], map: "Client_fk")
   PhoneType    PhoneType? @relation(fields: [id_PhoneType], references: [id], map: "PhoneType_fk")
 }
@@ -82,7 +84,7 @@ model Client {
   lastName  String
   cpf       String?
   active    Boolean     @default(true)
-  Email     Email?
-  Phone     Phone?
+  Email     Email[]
+  Phone     Phone[]
   WorkOrder WorkOrder[]
 }
