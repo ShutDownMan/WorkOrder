@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
 import { deleteDeviceHandler, getDeviceByIDHandler, patchDeviceHandler, postDeviceHandler } from './Device/device';
-import { deleteClientByIDHandler, getClientByIDHandler, patchClientByIDHandler, postClientHandler } from './Client/client';
+import { deleteClientByIDHandler, getClientByIDHandler, getClientsHandler, patchClientByIDHandler, postClientHandler } from './Client/client';
 
 const app: Express = express();
 const port = process.env.PORT || 8080;
@@ -12,6 +12,8 @@ app.listen(port, () => {
 });
 
 /// Client Handlers
+
+app.get("/clients", getClientsHandler);
 
 app.get("/client", getClientByIDHandler);
 

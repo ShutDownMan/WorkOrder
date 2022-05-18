@@ -1,13 +1,20 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import { assert, object, string, nullable, optional, size, refine, omit } from 'superstruct'
+import { assert, object, string, nullable, optional, size, refine, omit, number } from 'superstruct'
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
 import { Prisma } from '@prisma/client'
 import { isEmail } from "../Validations/email";
 import { v4 as uuidv4 } from 'uuid';
-import { isTelephoneNumber } from "../Validations/telephone";
 import { isCPF } from "../Validations/cpf";
+import { isCellphoneNumber, splitCellphoneNumber } from "../Validations/cellphone";
+import { isTelephoneNumber, splitTelephoneNumber } from "../Validations/telephone";
+
+/// model for getting all clients
+const ClientsGet = object({
+    take: optional(number()),
+    page: optional(number()),
+});
 
 /// model for client get by id
 const ClientGetID = object({
@@ -19,7 +26,7 @@ const ClientInsertModel = object({
     firstName: string(),
     lastName: string(),
     cellphone: refine(string(), 'cellphone', (v: string) => isTelephoneNumber(v)),
-    telephone: optional(refine(string(), 'telephone', (v: string) => isTelephoneNumber(v))),
+    telephone: optional(refine(string(), 'telephone', (v: string) => isCellphoneNumber(v))),
     email: optional(refine(string(), 'email', (v: string) => isEmail(v))),
     cpf: refine(string(), 'cpf', (v: string) => isCPF(v)),
 });
@@ -30,10 +37,56 @@ const ClientPatchingModel = object({
     firstName: optional(string()),
     lastName: optional(string()),
     cellphone: optional(refine(string(), 'cellphone', (v: string) => isTelephoneNumber(v))),
-    telephone: optional(refine(string(), 'telephone', (v: string) => isTelephoneNumber(v))),
+    telephone: optional(refine(string(), 'telephone', (v: string) => isCellphoneNumber(v))),
     email: optional(refine(string(), 'email', (v: string) => isEmail(v))),
     cpf: optional(refine(string(), 'cpf', (v: string) => isCPF(v))),
 });
+
+export async function getClientsHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    let reqBody = req.body;
+    /// validate input
+    try {
+        assert(reqBody, ClientsGet);
+    } catch (error) {
+        console.log("Error trying to get clients: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(403).json(errorRes);
+    }
+
+    /// getting records
+    try {
+        let clients = await prisma.client.findMany({
+            ...(reqBody.take && {
+                take: reqBody.take,
+            }),
+            ...(reqBody.page && reqBody.take && {
+                skip: reqBody.take * reqBody.page,
+            }),
+            include: {
+                Email: true,
+                Phone: true
+            }
+        });
+
+        return res.status(200).json(clients)
+    } catch (error) {
+        console.log("Error trying to get clients: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(403).json(errorRes);
+    }
+}
 
 export async function getClientByIDHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
@@ -127,7 +180,7 @@ export async function postClientHandler(req: Request, res: Response, next: NextF
             ...(postedClient.cellphone && {
                 Phone: {
                     create: {
-                        number: postedClient.cellphone,
+                        ...splitCellphoneNumber(postedClient.cellphone),
                         PhoneType: {
                             connect: {
                                 where: {
@@ -141,7 +194,7 @@ export async function postClientHandler(req: Request, res: Response, next: NextF
             ...(postedClient.telephone && {
                 Phone: {
                     create: {
-                        number: postedClient.telephone,
+                        ...splitTelephoneNumber(postedClient.telephone),
                         PhoneType: {
                             connect: {
                                 id: 2
