@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="0,324" last-zoom="0.85" max-obj-count="10"
+<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="1426,640" last-zoom="1.45" max-obj-count="12"
 	 default-schema="public" default-owner="adm"
 	 layers="Default layer"
 	 active-layers="0"
@@ -20,7 +20,19 @@ CAUTION: Do not modify this file unless you know what you are doing.
  password="123456sete">
 </role>
 
-<database name="WorkOrderDB" is-template="false" allow-conns="true">
+<database name="WorkOrderDB" is-template="false" allow-conns="true" append-at-eod="true">
+	<appended-sql><![CDATA[INSERT INTO public."PhoneType" ("description") VALUES ('Celular'), ('Telefone Fixo');
+
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Tela. ', 150.00, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Baterias.', 200.00, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Restaurações. de Software', 30.00, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Auto Falante. e Microfone', 170.00, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de. Conectores', 100.00, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Reparo na Placa. Principal', 500.00, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Flex. Cable', 50.00 , 60);
+
+INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), ('Em andamento'), ('Finalizado');
+]]></appended-sql>
 </database>
 
 <schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
@@ -42,7 +54,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="lastName" not-null="true">
 		<type name="text" length="0"/>
 	</column>
-	<column name="cpf">
+	<column name="cpf" not-null="true">
 		<type name="text" length="0"/>
 	</column>
 	<column name="active" not-null="true" default-value="true">
@@ -50,6 +62,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="User_pk" type="pk-constr" table="public.&quot;Client&quot;">
 		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="cpf_Unique" type="uq-constr" table="public.&quot;Client&quot;">
+		<columns names="cpf" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -113,20 +128,23 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</customidxs>
 </table>
 
-<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
 	<position x="1020" y="140"/>
 	<column name="id" not-null="true">
 		<type name="uuid" length="0"/>
 	</column>
+	<column name="obs">
+		<type name="text" length="0"/>
+	</column>
 	<constraint name="WorkOrder_pk" type="pk-constr" table="public.&quot;WorkOrder&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 
 	<customidxs object-type="column">
-		<object name="id_Client" index="1"/>
-		<object name="id_WorkOrderStatus" index="2"/>
+		<object name="id_Client" index="2"/>
+		<object name="id_WorkOrderStatus" index="3"/>
 	</customidxs>
 
 	<customidxs object-type="constraint">
@@ -135,14 +153,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</customidxs>
 </table>
 
-<table name="Task" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
+<table name="Task" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
 	<position x="1040" y="580"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
-	<column name="description" not-null="true">
+	<column name="description">
 		<type name="text" length="0"/>
 	</column>
 	<column name="timeCost">
@@ -156,13 +174,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 
 	<customidxs object-type="column">
-		<object name="id_Service" index="6"/>
 		<object name="id_WorkOrder" index="5"/>
 		<object name="id_device" index="4"/>
 	</customidxs>
 
 	<customidxs object-type="constraint">
-		<object name="Service_fk" index="3"/>
 		<object name="WorkOrder_fk" index="2"/>
 		<object name="device_fk" index="1"/>
 	</customidxs>
@@ -188,7 +204,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="text" length="0"/>
 	</column>
 	<column name="photoURL">
-		<type name="smallint" length="0"/>
+		<type name="text" length="0"/>
 	</column>
 	<constraint name="device_pk" type="pk-constr" table="public.device">
 		<columns names="id" ref-type="src-columns"/>
@@ -201,7 +217,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-fk-pattern="{st}_fk"
 	 src-table="public.device"
 	 dst-table="public.&quot;Task&quot;"
-	 src-required="false" dst-required="false"/>
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0.914711" y="-7.49996"/>
+	</label>
+</relationship>
 
 <table name="PhoneType" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
 	<schema name="public"/>
@@ -232,12 +252,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-fk-pattern="{st}_fk"
 	 src-table="public.&quot;WorkOrder&quot;"
 	 dst-table="public.&quot;Task&quot;"
-	 src-required="false" dst-required="false"/>
+	 src-required="true" dst-required="false"/>
 
 <table name="Service" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
-	<position x="1600" y="640"/>
+	<position x="1900" y="620"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -257,14 +277,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<relationship name="Service_has_many_Task" type="rel1n" layers="0"
-	 src-col-pattern="{sc}_{st}"
-	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
-	 src-fk-pattern="{st}_fk"
-	 src-table="public.&quot;Service&quot;"
-	 dst-table="public.&quot;Task&quot;"
-	 src-required="false" dst-required="false"/>
-
 <relationship name="User_has_many_WorkOrder" type="rel1n" layers="0"
 	 src-col-pattern="{sc}_{st}"
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
@@ -276,7 +288,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="WorkOrderStatus" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
-	<position x="1620" y="180"/>
+	<position x="1620" y="160"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -294,7 +306,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-fk-pattern="{st}_fk"
 	 src-table="public.&quot;WorkOrderStatus&quot;"
 	 dst-table="public.&quot;WorkOrder&quot;"
-	 src-required="false" dst-required="false"/>
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
 
 <relationship name="Client_has_many_Phone" type="rel1n" layers="0"
 	 src-col-pattern="{sc}_{st}"
@@ -311,5 +327,41 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-table="public.&quot;Client&quot;"
 	 dst-table="public.&quot;Email&quot;"
 	 src-required="false" dst-required="false"/>
+
+<table name="Task_Service" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="adm"/>
+	<position x="1500" y="620"/>
+	<column name="id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<constraint name="Task_Service_pk" type="pk-constr" table="public.&quot;Task_Service&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="Task_has_many_Task_Service" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Task&quot;"
+	 dst-table="public.&quot;Task_Service&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="5.92109" y="2.60083"/>
+	</label>
+</relationship>
+
+<relationship name="Service_has_many_Task_Service" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Service&quot;"
+	 dst-table="public.&quot;Task_Service&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
 
 </dbmodel>

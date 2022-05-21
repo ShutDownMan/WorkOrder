@@ -11,9 +11,10 @@ CREATE TABLE public."Client" (
 	name text NOT NULL,
 	"firstName" text NOT NULL,
 	"lastName" text NOT NULL,
-	cpf text,
+	cpf text NOT NULL,
 	active boolean NOT NULL DEFAULT true,
-	CONSTRAINT "User_pk" PRIMARY KEY (id)
+	CONSTRAINT "User_pk" PRIMARY KEY (id),
+	CONSTRAINT "cpf_Unique" UNIQUE (cpf)
 );
 -- ddl-end --
 ALTER TABLE public."Client" OWNER TO adm;
