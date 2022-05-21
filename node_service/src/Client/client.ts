@@ -25,8 +25,8 @@ const ClientGetID = object({
 const ClientInsertModel = object({
     firstName: string(),
     lastName: string(),
-    cellphone: refine(string(), 'cellphone', (v: string) => isTelephoneNumber(v)),
-    telephone: optional(refine(string(), 'telephone', (v: string) => isCellphoneNumber(v))),
+    cellphone: optional(refine(string(), 'cellphone', (v: string) => isCellphoneNumber(v))),
+    telephone: optional(refine(string(), 'telephone', (v: string) => isTelephoneNumber(v))),
     email: optional(refine(string(), 'email', (v: string) => isEmail(v))),
     cpf: refine(string(), 'cpf', (v: string) => isCPF(v)),
 });
@@ -36,8 +36,8 @@ const ClientPatchingModel = object({
     id: string(),
     firstName: optional(string()),
     lastName: optional(string()),
-    cellphone: optional(refine(string(), 'cellphone', (v: string) => isTelephoneNumber(v))),
-    telephone: optional(refine(string(), 'telephone', (v: string) => isCellphoneNumber(v))),
+    cellphone: optional(refine(string(), 'cellphone', (v: string) => isCellphoneNumber(v))),
+    telephone: optional(refine(string(), 'telephone', (v: string) => isTelephoneNumber(v))),
     email: optional(refine(string(), 'email', (v: string) => isEmail(v))),
     cpf: optional(refine(string(), 'cpf', (v: string) => isCPF(v))),
 });

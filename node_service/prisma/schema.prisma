@@ -34,32 +34,32 @@ model PhoneType {
 }
 
 model Service {
-  id                    Int      @id(map: "Service_pk") @default(autoincrement())
+  id                    Int            @id(map: "Service_pk") @default(autoincrement())
   description           String
   estimatedTimeCost     Int?
-  estimatedMaterialCost Decimal? @db.Money
-  Task                  Task[]
+  estimatedMaterialCost Decimal?       @db.Money
+  Task_Service          Task_Service[]
 }
 
 model Task {
-  id           Int        @id(map: "WorkOrderTask_pk") @default(autoincrement())
-  description  String
+  id           Int            @id(map: "WorkOrderTask_pk") @default(autoincrement())
+  description  String?
   timeCost     Int?
-  materialCost Decimal?   @db.Money
-  id_device    Int?
-  id_WorkOrder String?    @db.Uuid
-  id_Service   Int?
-  Service      Service?   @relation(fields: [id_Service], references: [id], map: "Service_fk")
-  WorkOrder    WorkOrder? @relation(fields: [id_WorkOrder], references: [id], map: "WorkOrder_fk")
-  device       device?    @relation(fields: [id_device], references: [id], map: "device_fk")
+  materialCost Decimal?       @db.Money
+  id_device    Int
+  id_WorkOrder String         @db.Uuid
+  WorkOrder    WorkOrder      @relation(fields: [id_WorkOrder], references: [id], map: "WorkOrder_fk")
+  device       device         @relation(fields: [id_device], references: [id], map: "device_fk")
+  Task_Service Task_Service[]
 }
 
 model WorkOrder {
-  id                 String           @id(map: "WorkOrder_pk") @db.Uuid
-  id_Client          String?          @db.Uuid
-  id_WorkOrderStatus Int?
-  Client             Client?          @relation(fields: [id_Client], references: [id], map: "Client_fk")
-  WorkOrderStatus    WorkOrderStatus? @relation(fields: [id_WorkOrderStatus], references: [id], map: "WorkOrderStatus_fk")
+  id                 String          @id(map: "WorkOrder_pk") @db.Uuid
+  obs                String?
+  id_Client          String?         @db.Uuid
+  id_WorkOrderStatus Int
+  Client             Client?         @relation(fields: [id_Client], references: [id], map: "Client_fk")
+  WorkOrderStatus    WorkOrderStatus @relation(fields: [id_WorkOrderStatus], references: [id], map: "WorkOrderStatus_fk")
   Task               Task[]
 }
 
@@ -84,9 +84,17 @@ model Client {
   name      String
   firstName String
   lastName  String
-  cpf       String?
+  cpf       String      @unique(map: "cpf_Unique")
   active    Boolean     @default(true)
   Email     Email[]
   Phone     Phone[]
   WorkOrder WorkOrder[]
+}
+
+model Task_Service {
+  id         Int     @id(map: "Task_Service_pk") @default(autoincrement())
+  id_Task    Int
+  id_Service Int
+  Service    Service @relation(fields: [id_Service], references: [id], map: "Service_fk")
+  Task       Task    @relation(fields: [id_Task], references: [id], map: "Task_fk")
 }

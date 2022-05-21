@@ -4,45 +4,41 @@ import { assert, object, string, nullable, size, refine, optional, number } from
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
 
-/// model for getting all devices
-const DevicesGet = object({
+/// model for getting all services
+const ServicesGet = object({
     take: optional(number()),
     page: optional(number()),
 });
 
-/// model for device get by id
-const DeviceGetID = object({
+/// model for service get by id
+const ServiceGetID = object({
     id: number(),
 });
 
 /// create model
-const DeviceInsertModel = object({
-    brand: string(),
-    model: string(),
-    photoURL: optional(string()),
-    sku: optional(string()),
-    description: optional(string()),
+const ServiceInsertModel = object({
+    description: string(),
+    estimatedTimeCost: optional(number()),
+    estimatedMaterialCost: optional(number()),
 });
 
-/// Device model for patching
-const DevicePatchingModel = object({
+/// Service model for patching
+const ServicePatchingModel = object({
     id: number(),
-    brand: optional(string()),
-    model: optional(string()),
-    photoURL: optional(string()),
-    sku: optional(string()),
     description: optional(string()),
+    estimatedTimeCost: optional(number()),
+    estimatedMaterialCost: optional(number()),
 });
 
-export async function getDevicesHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+export async function getServicesHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
 
     let reqBody = req.body;
     /// validate input
     try {
-        assert(reqBody, DevicesGet);
+        assert(reqBody, ServicesGet);
     } catch (error) {
-        console.log("Error trying to get devices: ", error);
+        console.log("Error trying to get services: ", error);
 
         let errorRes: HandlerError = {
             message: "Bad Request, couldn't validate data.",
@@ -54,7 +50,7 @@ export async function getDevicesHandler(req: Request, res: Response, next: NextF
 
     /// getting records
     try {
-        let devices = await prisma.device.findMany({
+        let services = await prisma.service.findMany({
             ...(reqBody.take && {
                 take: reqBody.take,
             }),
@@ -63,9 +59,9 @@ export async function getDevicesHandler(req: Request, res: Response, next: NextF
             })
         });
 
-        return res.status(200).json(devices)
+        return res.status(200).json(services)
     } catch (error) {
-        console.log("Error trying to get devices: ", error);
+        console.log("Error trying to get services: ", error);
 
         let errorRes: HandlerError = {
             message: "Bad Request, couldn't validate data.",
@@ -76,15 +72,15 @@ export async function getDevicesHandler(req: Request, res: Response, next: NextF
     }
 }
 
-export async function getDeviceByIDHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+export async function getServiceByIDHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
 
     let reqBody = req.body;
     /// validate input
     try {
-        assert(reqBody, DeviceGetID);
+        assert(reqBody, ServiceGetID);
     } catch (error) {
-        console.log("Error trying to get device by ID: ", error);
+        console.log("Error trying to get service by ID: ", error);
 
         let errorRes: HandlerError = {
             message: "Bad Request, couldn't validate data.",
@@ -94,31 +90,31 @@ export async function getDeviceByIDHandler(req: Request, res: Response, next: Ne
         return res.status(403).json(errorRes);
     }
 
-    /// query database for device
+    /// query database for service
     try {
-        /// return device
-        let queriedDevice = await prisma.device.findUnique({
+        /// return service
+        let queriedService = await prisma.service.findUnique({
             where: {
                 id: reqBody.id
             }
         });
 
-        /// if device was retrieved
-        if (!queriedDevice) {
+        /// if service was retrieved
+        if (!queriedService) {
             let errorRes: HandlerError = {
-                message: `Bad Request, couldn't find device with id ${reqBody.id}.`,
+                message: `Bad Request, couldn't find service with id ${reqBody.id}.`,
                 type: HandlerErrors.NotFound
             };
 
             return res.status(404).json(errorRes)
         }
 
-        return res.status(200).json(queriedDevice);
+        return res.status(200).json(queriedService);
     } catch (error) {
-        console.log("Error trying to find device by ID: ", error);
+        console.log("Error trying to find service by ID: ", error);
 
         let errorRes: HandlerError = {
-            message: "Server Error, couldn't find device by id.",
+            message: "Server Error, couldn't find service by id.",
             type: HandlerErrors.DatabaseError
         };
 
@@ -126,15 +122,15 @@ export async function getDeviceByIDHandler(req: Request, res: Response, next: Ne
     }
 }
 
-export async function postDeviceHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+export async function postServiceHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
 
     /// assert the input is valid
-    let postedDevice = req.body;
+    let postedService = req.body;
     try {
-        assert(postedDevice, DeviceInsertModel);
+        assert(postedService, ServiceInsertModel);
     } catch (error) {
-        console.log("Error trying to insert new device: ", error);
+        console.log("Error trying to insert new service: ", error);
 
         let errorRes: HandlerError = {
             message: "Bad Request, couldn't validate data.",
@@ -147,23 +143,21 @@ export async function postDeviceHandler(req: Request, res: Response, next: NextF
     try {
         /// data to be inserted into the database
         let data = {
-            brand: postedDevice.brand,
-            model: postedDevice.model,
-            photoURL: postedDevice.photoURL,
-            sku: postedDevice.sku,
-            description: postedDevice.description,
+            description: postedService.description,
+            estimatedTimeCost: postedService.estimatedTimeCost,
+            estimatedMaterialCost: postedService.estimatedMaterialCost,
         };
 
-        /// insert device in the database
-        const device = await prisma.device.create({
+        /// insert service in the database
+        const service = await prisma.service.create({
             data
         });
 
-        /// return newly added device identifier
-        return res.status(200).json({ id: device.id });
+        /// return newly added service identifier
+        return res.status(200).json({ id: service.id });
 
     } catch (error) {
-        console.log("Error trying to insert new device: ", error);
+        console.log("Error trying to insert new service: ", error);
 
         let errorRes: HandlerError = {
             message: "Server Error, couldn't insert data into the database.",
@@ -174,16 +168,16 @@ export async function postDeviceHandler(req: Request, res: Response, next: NextF
     }
 }
 
-export async function patchDeviceHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+export async function patchServiceHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     /// validate input
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
 
     let reqBody = req.body;
     /// validate input
     try {
-        assert(reqBody, DevicePatchingModel);
+        assert(reqBody, ServicePatchingModel);
     } catch (error) {
-        console.log("Error trying to get device by ID: ", error);
+        console.log("Error trying to get service by ID: ", error);
 
         let errorRes: HandlerError = {
             message: "Bad Request, couldn't validate data.",
@@ -193,46 +187,44 @@ export async function patchDeviceHandler(req: Request, res: Response, next: Next
         return res.status(403).json(errorRes);
     }
 
-    /// query database for device
+    /// query database for service
     try {
-        let { id, ...deviceUpdates } = reqBody;
+        let { id, ...serviceUpdates } = reqBody;
         let transactions = []
-        let deviceData = {
-            brand: deviceUpdates.brand,
-            model: deviceUpdates.model,
-            photoURL: deviceUpdates.photoURL,
-            sku: deviceUpdates.sku,
-            description: deviceUpdates.description,
+        let serviceData = {
+            description: serviceUpdates.description,
+            estimatedTimeCost: serviceUpdates.estimatedTimeCost,
+            estimatedMaterialCost: serviceUpdates.estimatedMaterialCost,
         };
 
-        /// update device in the database
-        let deviceUpdate = prisma.device.update({
+        /// update service in the database
+        let serviceUpdate = prisma.service.update({
             where: {
                 id: reqBody.id
             },
-            data: deviceData
+            data: serviceData
         });
-        transactions.push(deviceUpdate);
+        transactions.push(serviceUpdate);
 
         const transaction = await prisma.$transaction(transactions);
 
-        /// if device was retrieved
+        /// if service was retrieved
         if (!transaction) {
             let errorRes: HandlerError = {
-                message: `Bad Request, couldn't find device with id ${reqBody.id}.`,
+                message: `Bad Request, couldn't find service with id ${reqBody.id}.`,
                 type: HandlerErrors.NotFound
             };
 
             return res.status(404).json(errorRes)
         }
 
-        /// return updated device identifier
+        /// return updated service identifier
         return res.status(200).json({ transaction });
     } catch (error) {
-        console.log("Error trying to find device by ID: ", error);
+        console.log("Error trying to find service by ID: ", error);
 
         let errorRes: HandlerError = {
-            message: "Server Error, couldn't find device by id.",
+            message: "Server Error, couldn't find service by id.",
             type: HandlerErrors.DatabaseError
         };
 
@@ -240,16 +232,16 @@ export async function patchDeviceHandler(req: Request, res: Response, next: Next
     }
 }
 
-export async function deleteDeviceHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+export async function deleteServiceHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
     /// validate input
 
     let reqBody = req.body;
     /// validate input
     try {
-        assert(reqBody, DeviceGetID);
+        assert(reqBody, ServiceGetID);
     } catch (error) {
-        console.log("Error trying to get device by ID: ", error);
+        console.log("Error trying to get service by ID: ", error);
 
         let errorRes: HandlerError = {
             message: "Bad Request, couldn't validate data.",
@@ -259,24 +251,24 @@ export async function deleteDeviceHandler(req: Request, res: Response, next: Nex
         return res.status(403).json(errorRes);
     }
 
-    /// query database for device
+    /// query database for service
     try {
-        /// delete device in the database
-        let deleteDevice = prisma.device.delete({
+        /// delete service in the database
+        let deleteService = prisma.service.delete({
             where: {
                 id: reqBody.id
             }
         });
 
-        const transaction = await prisma.$transaction([deleteDevice])
+        const transaction = await prisma.$transaction([deleteService])
 
         /// return confirmation of deletion
-        return res.status(200).json({ message: "Device deleted sucessfully." });
+        return res.status(200).json({ message: "Service deleted sucessfully." });
     } catch (error) {
-        console.log("Error trying to delete device by ID: ", error);
+        console.log("Error trying to delete service by ID: ", error);
 
         let errorRes: HandlerError = {
-            message: "Server Error, couldn't find device by id.",
+            message: "Server Error, couldn't find service by id.",
             type: HandlerErrors.DatabaseError
         };
 
