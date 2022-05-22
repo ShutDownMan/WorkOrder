@@ -33,6 +33,7 @@ app.patch("/client", patchClientByIDHandler);
 
 app.delete("/client", deleteClientByIDHandler);
 
+
 /// Device Handlers
 
 app.get("/devices", getDevicesHandler);
@@ -45,6 +46,7 @@ app.patch("/device", patchDeviceHandler);
 
 app.delete("/device", deleteDeviceHandler);
 
+
 /// Service Handlers
 
 app.get("/services", getServicesHandler);
@@ -56,6 +58,20 @@ app.post("/service", postServiceHandler);
 app.patch("/service", patchServiceHandler);
 
 app.delete("/service", deleteServiceHandler);
+
+
+// /// Task Handlers
+
+// app.get("/tasks", getTasksHandler);
+
+// app.get("/task", getTasksByIDHandler);
+
+// app.post("/task", postTaskHandler);
+
+// app.patch("/task", patchTaskHandler);
+
+// app.delete("/task", deleteTaskHandler);
+
 
 /// WorkOrder Handlers
 

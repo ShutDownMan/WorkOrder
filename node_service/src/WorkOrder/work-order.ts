@@ -23,31 +23,43 @@ const WorkOrderGetID = object({
     id: string(),
 });
 
-const ServiceModel = object({
-    id: number()
+const ServiceInsertModel = object({
+    id: number(),
 });
 
-const TaskModel = object({
+const TaskInsertModel = object({
     deviceID: number(),
-    services: array(ServiceModel)
+    description: optional(string()),
+    services: array(ServiceInsertModel),
 });
 
 /// create model
 const WorkOrderInsertModel = object({
     idClient: string(),
-    obs: string(),
-    tasks: array(TaskModel)
+    obs: optional(string()),
+    tasks: optional(array(TaskInsertModel)),
+});
+
+// const ServicePatchingModel = object({
+//     id: number(),
+// });
+
+const TaskPatchingModel = object({
+    id: number(),
+    decription: optional(string()),
+    deviceID: optional(number()),
+    // services: optional(array(ServicePatchingModel)),
 });
 
 /// WorkOrder model for patching
 const WorkOrderPatchingModel = object({
     id: string(),
-    idClient: string(),
-    obs: string(),
-    tasks: array(TaskModel),
-    workOrderStatus: object({
+    idClient: optional(string()),
+    obs: optional(string()),
+    tasks: optional(array(TaskPatchingModel)),
+    workOrderStatus: optional(object({
         id: number(),
-    })
+    }))
 });
 
 export async function getWorkOrdersHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
@@ -81,7 +93,26 @@ export async function getWorkOrdersHandler(req: Request, res: Response, next: Ne
             }),
             ...(reqBody.page && reqBody.take && {
                 skip: reqBody.take * reqBody.page,
-            })
+            }),
+            select: {
+                id: true,
+                obs: true,
+                Client: {
+                    select: {
+                        id: true,
+                    }
+                },
+                Task: {
+                    select: {
+                        id: true
+                    }
+                },
+                WorkOrderStatus: {
+                    select: {
+                        description: true,
+                    }
+                },
+            }
         });
 
         return res.status(200).json(workOrders)
@@ -122,10 +153,24 @@ export async function getWorkOrdersByIDHandler(req: Request, res: Response, next
             where: {
                 id: reqBody.id
             },
-            include: {
-                Client: true,
-                Task: true,
-                WorkOrderStatus: true,
+            select: {
+                id: true,
+                obs: true,
+                Client: {
+                    select: {
+                        id: true,
+                    }
+                },
+                Task: {
+                    select: {
+                        id: true
+                    }
+                },
+                WorkOrderStatus: {
+                    select: {
+                        description: true,
+                    }
+                },
             }
         });
 
@@ -192,45 +237,48 @@ export async function postWorkOrderHandler(req: Request, res: Response, next: Ne
             data: workOrderData
         });
 
-        for (let postedTask of postedWorkOrder.tasks) {
-            /// task data to be inserted into the database
-            let taskData: Prisma.TaskCreateInput = {
-                WorkOrder: {
-                    connect: {
-                        id: workOrder.id,
-                    }
-                },
-                device: {
-                    connect: {
-                        id: postedTask.deviceID,
-                    }
-                },
-            };
-
-            /// insert task in the database
-            const task = await prisma.task.create({
-                data: taskData,
-            });
-
-            for (let postedService of postedTask.services) {
-                /// taskService data to be inserted into the database
-                let taskServiceData: Prisma.Task_ServiceCreateInput = {
-                    Service: {
+        if (postedWorkOrder.tasks) {
+            for (let postedTask of postedWorkOrder.tasks) {
+                /// task data to be inserted into the database
+                let taskData: Prisma.TaskCreateInput = {
+                    description: postedTask.description,
+                    WorkOrder: {
                         connect: {
-                            id: postedService.id,
+                            id: workOrder.id,
                         }
                     },
-                    Task: {
+                    Device: {
                         connect: {
-                            id: task.id,
+                            id: postedTask.deviceID,
                         }
-                    }
+                    },
                 };
 
-                /// insert taskService in the database
-                const taskServices = await prisma.task_Service.create({
-                    data: taskServiceData,
+                /// insert task in the database
+                const task = await prisma.task.create({
+                    data: taskData,
                 });
+
+                for (let postedService of postedTask.services) {
+                    /// taskService data to be inserted into the database
+                    let taskServiceData: Prisma.Task_ServiceCreateInput = {
+                        Service: {
+                            connect: {
+                                id: postedService.id,
+                            }
+                        },
+                        Task: {
+                            connect: {
+                                id: task.id,
+                            }
+                        }
+                    };
+
+                    /// insert taskService in the database
+                    const taskServices = await prisma.task_Service.create({
+                        data: taskServiceData,
+                    });
+                }
             }
         }
 
@@ -273,22 +321,62 @@ export async function patchWorkOrderHandler(req: Request, res: Response, next: N
         let { id, ...workOrderUpdates } = reqBody;
         let transactions = []
         let workOrderData = {
-
+            /// update observation if one was passed
+            ...(workOrderUpdates.obs && {
+                obs: workOrderUpdates.obs,
+            }),
+            /// update status if one was passed
+            ...(workOrderUpdates.workOrderStatus && {
+                WorkOrderStatus: {
+                    connect: {
+                        id: workOrderUpdates.workOrderStatus.id
+                    }
+                }
+            }),
         };
+
+        /// if tasks were passed
+        if (workOrderUpdates.tasks) {
+            /// for each task
+            for (let task of workOrderUpdates.tasks) {
+                /// update the current task
+                let taskUpdate = prisma.task.update({
+                    where: {
+                        id: task.id,
+                    },
+                    data: {
+                        ...(task.deviceID && {
+                            device: {
+                                connect: {
+                                    id: task.deviceID,
+                                }
+                            }
+                        }),
+                        ...(task.decription && {
+                            description: task.decription,
+                        }),
+                    }
+                });
+
+                transactions.push(taskUpdate);
+            }
+        }
 
         /// update workOrder in the database
         let workOrderUpdate = prisma.workOrder.update({
             where: {
-                id: reqBody.id
+                id
             },
-            data: workOrderData
+            data: {
+                ...workOrderData,
+            },
         });
         transactions.push(workOrderUpdate);
 
         const transaction = await prisma.$transaction(transactions);
 
         /// if workOrder was retrieved
-        if (!transaction) {
+        if (!transaction[0]) {
             let errorRes: HandlerError = {
                 message: `Bad Request, couldn't find workOrder with id ${reqBody.id}.`,
                 type: HandlerErrors.NotFound
@@ -298,7 +386,7 @@ export async function patchWorkOrderHandler(req: Request, res: Response, next: N
         }
 
         /// return updated workOrder identifier
-        return res.status(200).json({ transaction });
+        return res.status(200).json({ id });
     } catch (error) {
         console.log("Error trying to find workOrder by ID: ", error);
 
@@ -332,21 +420,44 @@ export async function deleteWorkOrderHandler(req: Request, res: Response, next: 
 
     /// query database for workOrder
     try {
-        /// delete workOrder in the database
-        let deleteWorkOrder = prisma.workOrder.delete({
+        /// delete workOrderTasks in the database
+        let deleteWorkOrderTask_Services = prisma.task_Service.deleteMany({
             where: {
-                id: reqBody.id,
-            },
-            include: {
                 Task: {
-                    include: {
-                        Task_Service: true
+                    WorkOrder: {
+                        id: reqBody.id,
                     }
                 }
             }
         });
 
-        const transaction = await prisma.$transaction([deleteWorkOrder])
+        /// delete workOrderTasks in the database
+        let deleteWorkOrderTasks = prisma.task.deleteMany({
+            where: {
+                WorkOrder: {
+                    id: reqBody.id,
+                }
+            }
+        });
+
+        /// delete workOrder in the database
+        let deleteWorkOrder = prisma.workOrder.delete({
+            where: {
+                id: reqBody.id,
+            }
+        });
+
+        const transaction = await prisma.$transaction([deleteWorkOrderTask_Services, deleteWorkOrderTasks, deleteWorkOrder])
+
+        /// if workOrder was retrieved
+        if (!transaction[1]) {
+            let errorRes: HandlerError = {
+                message: `Bad Request, couldn't find workOrder with id ${reqBody.id}.`,
+                type: HandlerErrors.NotFound
+            };
+
+            return res.status(404).json(errorRes)
+        }
 
         /// return confirmation of deletion
         return res.status(200).json({ message: "WorkOrder deleted sucessfully." });

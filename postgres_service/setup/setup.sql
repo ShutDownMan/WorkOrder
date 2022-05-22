@@ -53,8 +53,9 @@ ALTER TABLE public."Email" OWNER TO adm;
 -- DROP TABLE IF EXISTS public."WorkOrder" CASCADE;
 CREATE TABLE public."WorkOrder" (
 	id uuid NOT NULL,
+	obs text,
 	"id_Client" uuid,
-	"id_WorkOrderStatus" integer,
+	"id_WorkOrderStatus" integer NOT NULL,
 	CONSTRAINT "WorkOrder_pk" PRIMARY KEY (id)
 );
 -- ddl-end --
@@ -65,21 +66,20 @@ ALTER TABLE public."WorkOrder" OWNER TO adm;
 -- DROP TABLE IF EXISTS public."Task" CASCADE;
 CREATE TABLE public."Task" (
 	id serial NOT NULL,
-	description text NOT NULL,
+	description text,
 	"timeCost" integer,
 	"materialCost" money,
-	id_device integer,
-	"id_WorkOrder" uuid,
-	"id_Service" integer,
+	"id_Device" integer NOT NULL,
+	"id_WorkOrder" uuid NOT NULL,
 	CONSTRAINT "WorkOrderTask_pk" PRIMARY KEY (id)
 );
 -- ddl-end --
 ALTER TABLE public."Task" OWNER TO adm;
 -- ddl-end --
 
--- object: public.device | type: TABLE --
--- DROP TABLE IF EXISTS public.device CASCADE;
-CREATE TABLE public.device (
+-- object: public."Device" | type: TABLE --
+-- DROP TABLE IF EXISTS public."Device" CASCADE;
+CREATE TABLE public."Device" (
 	id serial NOT NULL,
 	brand text NOT NULL,
 	model text NOT NULL,
@@ -89,14 +89,14 @@ CREATE TABLE public.device (
 	CONSTRAINT device_pk PRIMARY KEY (id)
 );
 -- ddl-end --
-ALTER TABLE public.device OWNER TO adm;
+ALTER TABLE public."Device" OWNER TO adm;
 -- ddl-end --
 
--- object: device_fk | type: CONSTRAINT --
--- ALTER TABLE public."Task" DROP CONSTRAINT IF EXISTS device_fk CASCADE;
-ALTER TABLE public."Task" ADD CONSTRAINT device_fk FOREIGN KEY (id_device)
-REFERENCES public.device (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+-- object: "Device_fk" | type: CONSTRAINT --
+-- ALTER TABLE public."Task" DROP CONSTRAINT IF EXISTS "Device_fk" CASCADE;
+ALTER TABLE public."Task" ADD CONSTRAINT "Device_fk" FOREIGN KEY ("id_Device")
+REFERENCES public."Device" (id) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: public."PhoneType" | type: TABLE --
@@ -121,7 +121,7 @@ ON DELETE SET NULL ON UPDATE CASCADE;
 -- ALTER TABLE public."Task" DROP CONSTRAINT IF EXISTS "WorkOrder_fk" CASCADE;
 ALTER TABLE public."Task" ADD CONSTRAINT "WorkOrder_fk" FOREIGN KEY ("id_WorkOrder")
 REFERENCES public."WorkOrder" (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: public."Service" | type: TABLE --
@@ -139,13 +139,6 @@ COMMENT ON COLUMN public."Service"."estimatedTimeCost" IS E'Time estimated, in h
 COMMENT ON COLUMN public."Service"."estimatedMaterialCost" IS E'Cost in materials to complete the service.';
 -- ddl-end --
 ALTER TABLE public."Service" OWNER TO adm;
--- ddl-end --
-
--- object: "Service_fk" | type: CONSTRAINT --
--- ALTER TABLE public."Task" DROP CONSTRAINT IF EXISTS "Service_fk" CASCADE;
-ALTER TABLE public."Task" ADD CONSTRAINT "Service_fk" FOREIGN KEY ("id_Service")
-REFERENCES public."Service" (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "Client_fk" | type: CONSTRAINT --
@@ -170,7 +163,7 @@ ALTER TABLE public."WorkOrderStatus" OWNER TO adm;
 -- ALTER TABLE public."WorkOrder" DROP CONSTRAINT IF EXISTS "WorkOrderStatus_fk" CASCADE;
 ALTER TABLE public."WorkOrder" ADD CONSTRAINT "WorkOrderStatus_fk" FOREIGN KEY ("id_WorkOrderStatus")
 REFERENCES public."WorkOrderStatus" (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "Client_fk" | type: CONSTRAINT --
@@ -187,5 +180,49 @@ REFERENCES public."Client" (id) MATCH FULL
 ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --
 
+-- object: public."Task_Service" | type: TABLE --
+-- DROP TABLE IF EXISTS public."Task_Service" CASCADE;
+CREATE TABLE public."Task_Service" (
+	id serial NOT NULL,
+	"id_Task" integer NOT NULL,
+	"id_Service" integer NOT NULL,
+	CONSTRAINT "Task_Service_pk" PRIMARY KEY (id)
+);
+-- ddl-end --
+ALTER TABLE public."Task_Service" OWNER TO adm;
+-- ddl-end --
 
-INSERT INTO "PhoneType" (description) VALUES ('Celular'), ('Telefone Fixo');
+-- object: "Task_fk" | type: CONSTRAINT --
+-- ALTER TABLE public."Task_Service" DROP CONSTRAINT IF EXISTS "Task_fk" CASCADE;
+ALTER TABLE public."Task_Service" ADD CONSTRAINT "Task_fk" FOREIGN KEY ("id_Task")
+REFERENCES public."Task" (id) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "Service_fk" | type: CONSTRAINT --
+-- ALTER TABLE public."Task_Service" DROP CONSTRAINT IF EXISTS "Service_fk" CASCADE;
+ALTER TABLE public."Task_Service" ADD CONSTRAINT "Service_fk" FOREIGN KEY ("id_Service")
+REFERENCES public."Service" (id) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
+-- ddl-end --
+
+
+-- Appended SQL commands --
+
+INSERT INTO public."PhoneType" ("description") VALUES ('Celular'), ('Telefone Fixo');
+
+INSERT INTO public."Client" ("id", "firstName", "lastName", "name", "cpf") VALUES ('12f31849-4cc0-4588-9620-76592a8bb908', 'Miguel', 'Oliveira Alves', 'Miguel Oliveira Alves', '321.222.333-78');
+
+INSERT INTO public."Device" ("model", "brand", "description", "sku", "photoURL") VALUES ('12', 'iPhone', 'Celular de Rico', 'SK1111111111', 'https://a-static.mlcdn.com.br/618x463/iphone-12-pro-max-apple-128gb-azul-pacifico-67-cam-tripla-12mp-ios/magazineluiza/155596200/a69733d827ba8cfd5e3ba7bb572765c1.jpg');
+
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Tela', 150.00, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Baterias', 200.00, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Restaurações de Software', 30.50, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Auto Falante e Microfone', 170.95, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Conectores', 100.11, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Reparo na Placa Principal', 500.23, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Flex Cable', 50.87 , 60);
+
+INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), ('Em andamento'), ('Finalizado');
+
+-- ddl-end --

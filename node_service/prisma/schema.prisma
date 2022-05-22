@@ -46,10 +46,10 @@ model Task {
   description  String?
   timeCost     Int?
   materialCost Decimal?       @db.Money
-  id_device    Int
+  id_Device    Int
   id_WorkOrder String         @db.Uuid
+  Device       Device         @relation(fields: [id_Device], references: [id], map: "Device_fk")
   WorkOrder    WorkOrder      @relation(fields: [id_WorkOrder], references: [id], map: "WorkOrder_fk")
-  device       device         @relation(fields: [id_device], references: [id], map: "device_fk")
   Task_Service Task_Service[]
 }
 
@@ -61,16 +61,6 @@ model WorkOrder {
   Client             Client?         @relation(fields: [id_Client], references: [id], map: "Client_fk")
   WorkOrderStatus    WorkOrderStatus @relation(fields: [id_WorkOrderStatus], references: [id], map: "WorkOrderStatus_fk")
   Task               Task[]
-}
-
-model device {
-  id          Int     @id(map: "device_pk") @default(autoincrement())
-  brand       String
-  model       String
-  description String?
-  sku         String?
-  photoURL    String?
-  Task        Task[]
 }
 
 model WorkOrderStatus {
@@ -97,4 +87,14 @@ model Task_Service {
   id_Service Int
   Service    Service @relation(fields: [id_Service], references: [id], map: "Service_fk")
   Task       Task    @relation(fields: [id_Task], references: [id], map: "Task_fk")
+}
+
+model Device {
+  id          Int     @id(map: "device_pk") @default(autoincrement())
+  brand       String
+  model       String
+  description String?
+  sku         String?
+  photoURL    String?
+  Task        Task[]
 }

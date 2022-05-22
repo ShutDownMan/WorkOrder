@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="1426,640" last-zoom="1.45" max-obj-count="12"
+<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="854,1271" last-zoom="1.45" max-obj-count="12"
 	 default-schema="public" default-owner="adm"
 	 layers="Default layer"
 	 active-layers="0"
@@ -21,15 +21,20 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </role>
 
 <database name="WorkOrderDB" is-template="false" allow-conns="true" append-at-eod="true">
-	<appended-sql><![CDATA[INSERT INTO public."PhoneType" ("description") VALUES ('Celular'), ('Telefone Fixo');
+	<appended-sql><![CDATA[
+INSERT INTO public."PhoneType" ("description") VALUES ('Celular'), ('Telefone Fixo');
 
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Tela. ', 150.00, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Baterias.', 200.00, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Restaurações. de Software', 30.00, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Auto Falante. e Microfone', 170.00, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de. Conectores', 100.00, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Reparo na Placa. Principal', 500.00, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Flex. Cable', 50.00 , 60);
+INSERT INTO public."Client" ("id", "firstName", "lastName", "name", "cpf") VALUES ('12f31849-4cc0-4588-9620-76592a8bb908', 'Miguel', 'Oliveira Alves', 'Miguel Oliveira Alves', '321.222.333-78');
+
+INSERT INTO public."Device" ("model", "brand", "description", "sku", "photoURL") VALUES ('12', 'iPhone', 'Celular de Rico', 'SK1111111111', 'https://a-static.mlcdn.com.br/618x463/iphone-12-pro-max-apple-128gb-azul-pacifico-67-cam-tripla-12mp-ios/magazineluiza/155596200/a69733d827ba8cfd5e3ba7bb572765c1.jpg');
+
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Tela', 150.00, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Baterias', 200.00, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Restaurações de Software', 30.50, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Auto Falante e Microfone', 170.95, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Conectores', 100.11, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Reparo na Placa Principal', 500.23, 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Flex Cable', 50.87 , 60);
 
 INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), ('Em andamento'), ('Finalizado');
 ]]></appended-sql>
@@ -174,17 +179,17 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	</constraint>
 
 	<customidxs object-type="column">
+		<object name="id_Device" index="4"/>
 		<object name="id_WorkOrder" index="5"/>
-		<object name="id_device" index="4"/>
 	</customidxs>
 
 	<customidxs object-type="constraint">
+		<object name="Device_fk" index="1"/>
 		<object name="WorkOrder_fk" index="2"/>
-		<object name="device_fk" index="1"/>
 	</customidxs>
 </table>
 
-<table name="device" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+<table name="Device" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
 	<position x="1060" y="1040"/>
@@ -206,7 +211,7 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	<column name="photoURL">
 		<type name="text" length="0"/>
 	</column>
-	<constraint name="device_pk" type="pk-constr" table="public.device">
+	<constraint name="device_pk" type="pk-constr" table="public.&quot;Device&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
@@ -215,7 +220,7 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	 src-col-pattern="{sc}_{st}"
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
 	 src-fk-pattern="{st}_fk"
-	 src-table="public.device"
+	 src-table="public.&quot;Device&quot;"
 	 dst-table="public.&quot;Task&quot;"
 	 src-required="true" dst-required="false">
 	<label ref-type="name-label">

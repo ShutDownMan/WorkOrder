@@ -187,39 +187,39 @@ export async function patchServiceHandler(req: Request, res: Response, next: Nex
         return res.status(403).json(errorRes);
     }
 
+    let { id, ...serviceUpdates } = reqBody;
+    let transactions = []
+    let serviceData = {
+        description: serviceUpdates.description,
+        estimatedTimeCost: serviceUpdates.estimatedTimeCost,
+        estimatedMaterialCost: serviceUpdates.estimatedMaterialCost,
+    };
+
+    /// update service in the database
+    let serviceUpdate = prisma.service.update({
+        where: {
+            id
+        },
+        data: serviceData
+    });
+    transactions.push(serviceUpdate);
+
     /// query database for service
     try {
-        let { id, ...serviceUpdates } = reqBody;
-        let transactions = []
-        let serviceData = {
-            description: serviceUpdates.description,
-            estimatedTimeCost: serviceUpdates.estimatedTimeCost,
-            estimatedMaterialCost: serviceUpdates.estimatedMaterialCost,
-        };
-
-        /// update service in the database
-        let serviceUpdate = prisma.service.update({
-            where: {
-                id: reqBody.id
-            },
-            data: serviceData
-        });
-        transactions.push(serviceUpdate);
-
         const transaction = await prisma.$transaction(transactions);
 
-        /// if service was retrieved
-        if (!transaction) {
+        /// if service was not retrieved
+        if (!transaction[0]) {
             let errorRes: HandlerError = {
                 message: `Bad Request, couldn't find service with id ${reqBody.id}.`,
                 type: HandlerErrors.NotFound
             };
 
-            return res.status(404).json(errorRes)
+            return res.status(403).json(errorRes)
         }
 
         /// return updated service identifier
-        return res.status(200).json({ transaction });
+        return res.status(200).json({ id });
     } catch (error) {
         console.log("Error trying to find service by ID: ", error);
 
