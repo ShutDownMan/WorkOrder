@@ -4,6 +4,7 @@ import { deleteClientByIDHandler, getClientByIDHandler, getClientsHandler, patch
 import cors from 'cors';
 import { deleteServiceHandler, getServiceByIDHandler, getServicesHandler, patchServiceHandler, postServiceHandler } from './Service/service';
 import { deleteWorkOrderHandler, getWorkOrdersByIDHandler, getWorkOrdersHandler, patchWorkOrderHandler, postWorkOrderHandler } from './WorkOrder/work-order';
+import { deleteTaskHandler, getTaskByIDHandler, getTasksHandler, patchTaskHandler, postTaskHandler } from './Task/task';
 
 const app: Express = express();
 const port = process.env.PORT || 8080;
@@ -62,15 +63,15 @@ app.delete("/service", deleteServiceHandler);
 
 // /// Task Handlers
 
-// app.get("/tasks", getTasksHandler);
+app.get("/tasks", getTasksHandler);
 
-// app.get("/task", getTasksByIDHandler);
+app.get("/task", getTaskByIDHandler);
 
-// app.post("/task", postTaskHandler);
+app.post("/task", postTaskHandler);
 
-// app.patch("/task", patchTaskHandler);
+app.patch("/task", patchTaskHandler);
 
-// app.delete("/task", deleteTaskHandler);
+app.delete("/task", deleteTaskHandler);
 
 
 /// WorkOrder Handlers
