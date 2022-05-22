@@ -352,8 +352,8 @@ export async function patchWorkOrderHandler(req: Request, res: Response, next: N
                                 }
                             }
                         }),
-                        ...(task.decription && {
-                            description: task.decription,
+                        ...(task.description && {
+                            description: task.description,
                         }),
                     }
                 });
