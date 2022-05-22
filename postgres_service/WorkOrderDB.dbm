@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="854,1271" last-zoom="1.45" max-obj-count="12"
+<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="1422,834" last-zoom="1.45" max-obj-count="12"
 	 default-schema="public" default-owner="adm"
 	 layers="Default layer"
 	 active-layers="0"
@@ -26,15 +26,19 @@ INSERT INTO public."PhoneType" ("description") VALUES ('Celular'), ('Telefone Fi
 
 INSERT INTO public."Client" ("id", "firstName", "lastName", "name", "cpf") VALUES ('12f31849-4cc0-4588-9620-76592a8bb908', 'Miguel', 'Oliveira Alves', 'Miguel Oliveira Alves', '321.222.333-78');
 
-INSERT INTO public."Device" ("model", "brand", "description", "sku", "photoURL") VALUES ('12', 'iPhone', 'Celular de Rico', 'SK1111111111', 'https://a-static.mlcdn.com.br/618x463/iphone-12-pro-max-apple-128gb-azul-pacifico-67-cam-tripla-12mp-ios/magazineluiza/155596200/a69733d827ba8cfd5e3ba7bb572765c1.jpg');
+INSERT INTO public."Device" ("model", "brand", "description", "sku", "photoURL") VALUES
+('12', 'iPhone', 'Celular de Rico', 'SK1111111111', 'https://a-static.mlcdn.com.br/618x463/iphone-12-pro-max-apple-128gb-azul-pacifico-67-cam-tripla-12mp-ios/magazineluiza/155596200/a69733d827ba8cfd5e3ba7bb572765c1.jpg'),
+('Mi Note 10 Lite', 'Xiaomi', 'Celular de Pobre', 'SK6546455641561', 'https://http2.mlstatic.com/D_NQ_NP_874706-MLA43195094458_082020-O.jpg'),
+('7', 'iPhone', 'Twitter for iPhone', 'SKK5555555555', 'https://a-static.mlcdn.com.br/1500x1500/iphone-7-apple-32gb-preto-47-12mp-ios/magazineluiza/218009200/235e4ca66f67b86e161bb326bf805911.jpg');
 
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Tela', 150.00, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Baterias', 200.00, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Restaurações de Software', 30.50, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Auto Falante e Microfone', 170.95, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Conectores', 100.11, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Reparo na Placa Principal', 500.23, 60);
-INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES ('Troca de Flex Cable', 50.87 , 60);
+INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimatedTimeCost") VALUES
+('Troca de Tela', 150.00, 60),
+('Troca de Baterias', 200.00, 60),
+('Restaurações de Software', 30.50, 60),
+('Auto Falante e Microfone', 170.95, 60),
+('Troca de Conectores', 100.11, 60),
+('Reparo na Placa Principal', 500.23, 60),
+('Troca de Flex Cable', 50.87 , 60);
 
 INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), ('Em andamento'), ('Finalizado');
 ]]></appended-sql>
