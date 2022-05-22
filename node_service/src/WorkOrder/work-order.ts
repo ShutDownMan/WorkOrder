@@ -46,7 +46,7 @@ const WorkOrderInsertModel = object({
 
 const TaskPatchingModel = object({
     id: number(),
-    decription: optional(string()),
+    description: optional(string()),
     deviceID: optional(number()),
     // services: optional(array(ServicePatchingModel)),
 });
