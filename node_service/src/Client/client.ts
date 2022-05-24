@@ -248,12 +248,8 @@ export async function patchClientByIDHandler(req: Request, res: Response, next: 
     try {
         let { id, ...userUpdates } = reqBody;
         let userData = {
-            ...(userUpdates.firstName && {
-                firstName: userUpdates.firstName,
-            }),
-            ...(userUpdates.lastName && {
-                lastName: userUpdates.lastName,
-            }),
+            firstName: userUpdates.firstName,
+            lastName: userUpdates.lastName,
             cpf: userUpdates.cpf,
         };
 
