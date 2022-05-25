@@ -159,11 +159,12 @@ export async function getWorkOrdersByIDHandler(req: Request, res: Response, next
                 Client: {
                     select: {
                         id: true,
+                        name: true,
                     }
                 },
                 Task: {
                     select: {
-                        id: true
+                        id: true,
                     }
                 },
                 WorkOrderStatus: {
@@ -184,7 +185,40 @@ export async function getWorkOrdersByIDHandler(req: Request, res: Response, next
             return res.status(404).json(errorRes)
         }
 
-        return res.status(200).json(queriedWorkOrder);
+        let task_services = await prisma.task_Service.findMany({
+            where: {
+                Task: {
+                    id: queriedWorkOrder.Task[0].id,
+                }
+            },
+            select: {
+                Service: {
+                    select: {
+                        description: true,
+                        estimatedTimeCost: true,
+                        estimatedMaterialCost: true,
+                    }
+                }
+            }
+        });
+
+        let responseObj: any = {
+            ...queriedWorkOrder,
+        }
+
+        responseObj.Task[0].totalEstimatedTimeCost = task_services.reduce((acc, task_service) => {
+            return acc + Number(task_service.Service.estimatedTimeCost);
+        }, 0);
+
+        responseObj.Task[0].totalEstimatedMaterialCost = task_services.reduce((acc, task_service) => {
+            return acc + Number(task_service.Service.estimatedMaterialCost);
+        }, 0);
+
+        responseObj.Task[0].services = task_services.map(task_service => {
+            return task_service.Service;
+        });
+
+        return res.status(200).json(responseObj);
     } catch (error) {
         console.log("Error trying to find workOrder by ID: ", error);
 
