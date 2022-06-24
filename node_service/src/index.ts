@@ -1,13 +1,16 @@
 import express, { Express } from 'express';
-import { deleteDeviceHandler, getDeviceByIDHandler, patchDeviceHandler, postDeviceHandler, getDevicesHandler } from './Device/device';
-import { deleteClientByIDHandler, getClientByIDHandler, getClientsHandler, patchClientByIDHandler, postClientHandler } from './Client/client';
 import cors from 'cors';
+import multer from "multer";
+import { deleteDeviceHandler, getDeviceByIDHandler, patchDeviceHandler, postDeviceHandler, getDevicesHandler, postDeviceFromJsonHandler, postDeviceFromExcelHandler } from './Device/device';
+import { deleteClientByIDHandler, getClientByIDHandler, getClientsHandler, patchClientByIDHandler, postClientHandler } from './Client/client';
 import { deleteServiceHandler, getServiceByIDHandler, getServicesHandler, patchServiceHandler, postServiceHandler } from './Service/service';
 import { deleteWorkOrderHandler, getWorkOrdersByIDHandler, getWorkOrdersHandler, patchWorkOrderHandler, postWorkOrderHandler } from './WorkOrder/work-order';
 import { deleteTaskHandler, getTaskByIDHandler, getTasksHandler, patchTaskHandler, postTaskHandler } from './Task/task';
 
 const app: Express = express();
 const port = process.env.PORT || 8080;
+
+const upload = multer();
 
 app.use(express.json());
 app.use(cors());
@@ -42,6 +45,10 @@ app.get("/devices", getDevicesHandler);
 app.get("/device", getDeviceByIDHandler);
 
 app.post("/device", postDeviceHandler);
+
+app.post("/device/from-json", upload.single("file"), postDeviceFromJsonHandler);
+
+app.post("/device/from-excel", upload.single("file"), postDeviceFromExcelHandler);
 
 app.patch("/device", patchDeviceHandler);
 

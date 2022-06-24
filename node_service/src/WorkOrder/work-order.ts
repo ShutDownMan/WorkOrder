@@ -62,6 +62,56 @@ const WorkOrderPatchingModel = object({
     }))
 });
 
+export async function getWorkWordersOfToday(req: Request, res: Response, next: NextFunction) {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    let reqBody = req.body;
+    /// validate input
+    try {
+        assert(reqBody, WorkOrdersGet);
+    } catch (error) {
+        console.log("Error trying to get workOrders: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(403).json(errorRes);
+    }
+
+    let { clientID, take, page } = reqBody;
+
+    /// get all workOrders from today
+    try {
+        /// fetch from the database the workOrders
+        const workOrders = await prisma.workOrder.findMany({
+            where: {
+                ...(clientID ? { idClient: clientID } : {}),
+                createdAt: {
+                    gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                    lte: new Date(new Date().setHours(23, 59, 59, 999)),
+                },
+            },
+            take,
+            ...(page && take ? { skip: (page - 1) * take } : {}),
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+
+        return res.json(workOrders);
+    } catch (error) {
+        console.log("Error trying to get workOrders: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(403).json(errorRes);    }
+}
+
 export async function getWorkOrdersHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
 
@@ -92,7 +142,7 @@ export async function getWorkOrdersHandler(req: Request, res: Response, next: Ne
                 take: reqBody.take,
             }),
             ...(reqBody.page && reqBody.take && {
-                skip: reqBody.take * reqBody.page,
+                skip: (reqBody.page - 1) * reqBody.take,
             }),
             select: {
                 id: true,

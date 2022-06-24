@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="1422,834" last-zoom="1.45" max-obj-count="12"
+<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="0,888" last-zoom="1.45" max-obj-count="12"
 	 default-schema="public" default-owner="adm"
 	 layers="Default layer"
 	 active-layers="0"
@@ -21,7 +21,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </role>
 
 <database name="WorkOrderDB" is-template="false" allow-conns="true" append-at-eod="true">
-	<appended-sql><![CDATA[
+	<appended-sql> <![CDATA[
 INSERT INTO public."PhoneType" ("description") VALUES ('Celular'), ('Telefone Fixo');
 
 INSERT INTO public."Client" ("id", "firstName", "lastName", "name", "cpf") VALUES ('12f31849-4cc0-4588-9620-76592a8bb908', 'Miguel', 'Oliveira Alves', 'Miguel Oliveira Alves', '321.222.333-78');
@@ -41,7 +41,7 @@ INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimated
 ('Troca de Flex Cable', 50.87 , 60);
 
 INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), ('Em andamento'), ('Finalizado');
-]]></appended-sql>
+]]> </appended-sql>
 </database>
 
 <schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
@@ -235,7 +235,7 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 <table name="PhoneType" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
-	<position x="180" y="980"/>
+	<position x="180" y="960"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -275,11 +275,11 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	</column>
 	<column name="estimatedTimeCost">
 		<type name="integer" length="0"/>
-		<comment><![CDATA[Time estimated, in hours, to complete the service.]]></comment>
+		<comment> <![CDATA[Time estimated, in hours, to complete the service.]]> </comment>
 	</column>
 	<column name="estimatedMaterialCost">
 		<type name="money" length="0"/>
-		<comment><![CDATA[Cost in materials to complete the service.]]></comment>
+		<comment> <![CDATA[Cost in materials to complete the service.]]> </comment>
 	</column>
 	<constraint name="Service_pk" type="pk-constr" table="public.&quot;Service&quot;">
 		<columns names="id" ref-type="src-columns"/>
