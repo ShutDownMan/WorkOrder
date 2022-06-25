@@ -137,7 +137,7 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	</customidxs>
 </table>
 
-<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
 	<position x="1020" y="140"/>
@@ -146,6 +146,9 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	</column>
 	<column name="obs">
 		<type name="text" length="0"/>
+	</column>
+	<column name="createdAt" default-value="NOW()">
+		<type name="timestamp with time zone" length="0" with-timezone="true"/>
 	</column>
 	<constraint name="WorkOrder_pk" type="pk-constr" table="public.&quot;WorkOrder&quot;">
 		<columns names="id" ref-type="src-columns"/>

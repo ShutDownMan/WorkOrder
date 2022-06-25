@@ -56,6 +56,7 @@ CREATE TABLE public."WorkOrder" (
 	obs text,
 	"id_Client" uuid,
 	"id_WorkOrderStatus" integer NOT NULL,
+	"createdAt" timestamp with time zone DEFAULT NOW(),
 	CONSTRAINT "WorkOrder_pk" PRIMARY KEY (id)
 );
 -- ddl-end --
