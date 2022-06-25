@@ -109,7 +109,8 @@ export async function getWorkWordersOfToday(req: Request, res: Response, next: N
             type: HandlerErrors.ValidationError
         };
 
-        return res.status(403).json(errorRes);    }
+        return res.status(403).json(errorRes);
+    }
 }
 
 export async function getWorkOrdersHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
