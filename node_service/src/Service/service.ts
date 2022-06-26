@@ -30,6 +30,12 @@ const ServicePatchingModel = object({
     estimatedMaterialCost: optional(number()),
 });
 
+/// Service model for fetching Top N services by device
+const ServiceTopNModel = object({
+    take: optional(number()),
+    page: optional(number()),
+});
+
 export async function getServicesHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
 
@@ -269,6 +275,59 @@ export async function deleteServiceHandler(req: Request, res: Response, next: Ne
 
         let errorRes: HandlerError = {
             message: "Server Error, couldn't find service by id.",
+            type: HandlerErrors.DatabaseError
+        };
+
+        return res.status(500).json(errorRes);
+    }
+}
+
+export async function getTopNServicesByDeviceHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+    /// validate input
+    let reqBody = req.body;
+    /// validate input
+    try {
+        assert(reqBody, ServiceTopNModel);
+    } catch (error) {
+        console.log("Error trying to get device by ID: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(403).json(errorRes);
+    }
+
+    /// query database for device
+    try {
+        let take = reqBody.take || 5;
+        let page = reqBody.page || 1;
+        /// get top N services by device
+        let topNServices = await prisma.$queryRaw`
+            SELECT
+                COUNT("Task"."id_Device") as device_count,
+                "Device".*,
+                "Service".*,
+                "Task".*
+            FROM "Service"
+            JOIN "Task_Service" ON "Task_Service"."id_Service" = "Service".id
+            JOIN "Task" ON "Task".id = "Task_Service"."id_Task"
+            JOIN "Device" ON "Device".id = "Task"."id_Device"
+            GROUP BY "Service".id, "Task".id, "Device".id
+            ORDER BY device_count DESC
+            LIMIT ${take}
+            OFFSET ${(page - 1) * take}
+        `;
+
+        /// return top N services by device
+        return res.status(200).json(topNServices);
+    } catch (error) {
+        console.log("Error trying to get top N services by device: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Server Error, couldn't find top N services by device.",
             type: HandlerErrors.DatabaseError
         };
 

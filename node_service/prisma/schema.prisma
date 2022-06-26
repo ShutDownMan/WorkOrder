@@ -58,6 +58,7 @@ model WorkOrder {
   obs                String?
   id_Client          String?         @db.Uuid
   id_WorkOrderStatus Int
+  createdAt          DateTime?       @default(now()) @db.Timestamptz(6)
   Client             Client?         @relation(fields: [id_Client], references: [id], map: "Client_fk")
   WorkOrderStatus    WorkOrderStatus @relation(fields: [id_WorkOrderStatus], references: [id], map: "WorkOrderStatus_fk")
   Task               Task[]

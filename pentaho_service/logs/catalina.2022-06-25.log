@@ -1,0 +1,142 @@
+25-Jun-2022 08:44:15.189 WARNING [main] org.apache.catalina.startup.SetAllPropertiesRule.begin [SetAllPropertiesRule]{Server/Service/Connector} Setting property 'relaxedPathChars' to '[]|' did not find a matching property.
+25-Jun-2022 08:44:15.208 WARNING [main] org.apache.catalina.startup.SetAllPropertiesRule.begin [SetAllPropertiesRule]{Server/Service/Connector} Setting property 'relaxedQueryChars' to '^{}[]|&' did not find a matching property.
+25-Jun-2022 08:44:15.208 WARNING [main] org.apache.catalina.startup.SetAllPropertiesRule.begin [SetAllPropertiesRule]{Server/Service/Connector} Setting property 'maxHttpHeaderSize' to '65536' did not find a matching property.
+25-Jun-2022 08:44:15.288 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version:        Apache Tomcat/8.5.34
+25-Jun-2022 08:44:15.289 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server built:          Sep 4 2018 22:28:22 UTC
+25-Jun-2022 08:44:15.289 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server number:         8.5.34.0
+25-Jun-2022 08:44:15.290 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Name:               Linux
+25-Jun-2022 08:44:15.290 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Version:            5.15.48-1-MANJARO
+25-Jun-2022 08:44:15.291 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Architecture:          amd64
+25-Jun-2022 08:44:15.291 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Java Home:             /usr/local/openjdk-8/jre
+25-Jun-2022 08:44:15.292 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Version:           1.8.0_332-b09
+25-Jun-2022 08:44:15.292 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Vendor:            Oracle Corporation
+25-Jun-2022 08:44:15.293 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_BASE:         /opt/pentaho/pentaho-server/tomcat
+25-Jun-2022 08:44:15.293 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_HOME:         /opt/pentaho/pentaho-server/tomcat
+25-Jun-2022 08:44:15.293 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.config.file=/opt/pentaho/pentaho-server/tomcat/conf/logging.properties
+25-Jun-2022 08:44:15.294 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+25-Jun-2022 08:44:15.294 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djdk.tls.ephemeralDHKeySize=2048
+25-Jun-2022 08:44:15.294 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.protocol.handler.pkgs=org.apache.catalina.webresources
+25-Jun-2022 08:44:15.295 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dorg.apache.catalina.security.SecurityListener.UMASK=0027
+25-Jun-2022 08:44:15.295 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Xms2048m
+25-Jun-2022 08:44:15.296 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Xmx6144m
+25-Jun-2022 08:44:15.300 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -XX:MaxPermSize=256m
+25-Jun-2022 08:44:15.301 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dsun.rmi.dgc.client.gcInterval=3600000
+25-Jun-2022 08:44:15.301 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dsun.rmi.dgc.server.gcInterval=3600000
+25-Jun-2022 08:44:15.302 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dfile.encoding=utf8
+25-Jun-2022 08:44:15.302 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -DDI_HOME=/opt/pentaho/pentaho-server/pentaho-solutions/system/kettle
+25-Jun-2022 08:44:15.303 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dignore.endorsed.dirs=
+25-Jun-2022 08:44:15.306 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.base=/opt/pentaho/pentaho-server/tomcat
+25-Jun-2022 08:44:15.307 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.home=/opt/pentaho/pentaho-server/tomcat
+25-Jun-2022 08:44:15.309 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.io.tmpdir=/opt/pentaho/pentaho-server/tomcat/temp
+25-Jun-2022 08:44:15.309 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib]
+25-Jun-2022 08:44:15.560 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["http-nio-8080"]
+25-Jun-2022 08:44:15.595 INFO [main] org.apache.tomcat.util.net.NioSelectorPool.getSharedSelector Using a shared selector for servlet write/read
+25-Jun-2022 08:44:15.610 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["ajp-nio-8009"]
+25-Jun-2022 08:44:15.613 INFO [main] org.apache.tomcat.util.net.NioSelectorPool.getSharedSelector Using a shared selector for servlet write/read
+25-Jun-2022 08:44:15.621 INFO [main] org.apache.catalina.startup.Catalina.load Initialization processed in 1728 ms
+25-Jun-2022 08:44:15.677 INFO [main] org.apache.catalina.core.StandardService.startInternal Starting service [Catalina]
+25-Jun-2022 08:44:15.678 INFO [main] org.apache.catalina.core.StandardEngine.startInternal Starting Servlet Engine: Apache Tomcat/8.5.34
+25-Jun-2022 08:44:15.698 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/ROOT]
+25-Jun-2022 08:44:16.969 INFO [localhost-startStop-1] org.apache.jasper.servlet.TldScanner.scanJars At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+25-Jun-2022 08:44:17.121 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/ROOT] has finished in [1,423] ms
+25-Jun-2022 08:44:17.122 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/pentaho-style]
+25-Jun-2022 08:44:17.745 INFO [localhost-startStop-1] org.apache.jasper.servlet.TldScanner.scanJars At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+25-Jun-2022 08:44:17.753 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/pentaho-style] has finished in [631] ms
+25-Jun-2022 08:44:17.754 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/pentaho]
+25-Jun-2022 08:44:17.762 WARNING [localhost-startStop-1] org.apache.catalina.startup.SetContextPropertiesRule.begin [SetContextPropertiesRule]{Context} Setting property 'docbase' to 'webapps/pentaho/' did not find a matching property.
+25-Jun-2022 08:44:37.416 INFO [localhost-startStop-1] org.apache.jasper.servlet.TldScanner.scanJars At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+25-Jun-2022 08:44:38.571 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent Checkpoint start
+25-Jun-2022 08:44:38.572 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent checkpointClose start
+25-Jun-2022 08:44:38.617 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent checkpointClose end
+25-Jun-2022 08:44:38.618 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent Checkpoint end - txts: 1
+25-Jun-2022 08:44:38.671 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent Checkpoint start
+25-Jun-2022 08:44:38.671 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent checkpointClose start
+25-Jun-2022 08:44:38.722 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent checkpointClose end
+25-Jun-2022 08:44:38.723 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent Checkpoint end - txts: 1
+25-Jun-2022 08:44:38.779 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent Checkpoint start
+25-Jun-2022 08:44:38.779 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent checkpointClose start
+25-Jun-2022 08:44:38.820 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent checkpointClose end
+25-Jun-2022 08:44:38.821 INFO [HSQLDB Server @528e6d19] org.hsqldb.persist.Logger.logInfoEvent Checkpoint end - txts: 1
+25-Jun-2022 08:44:42.566 INFO [localhost-startStop-1] org.apache.karaf.main.Main.launch Installing and starting initial bundles
+25-Jun-2022 08:44:42.867 INFO [localhost-startStop-1] org.apache.karaf.main.Main.launch All initial bundles installed and set to start
+25-Jun-2022 08:44:43.440 INFO [Karaf Lock Monitor Thread] org.apache.karaf.main.Main$KarafLockCallback.lockAcquired Lock acquired. Setting startlevel to 100
+25-Jun-2022 08:44:51.836 INFO [features-3-thread-1] org.pentaho.caching.impl.PentahoCacheManagerFactory$RegistrationHandler$1.onSuccess New Caching Service registered
+25-Jun-2022 08:44:56.989 INFO [features-3-thread-1] org.apache.cxf.bus.osgi.CXFExtensionBundleListener.addExtensions Adding the extensions from bundle org.apache.cxf.cxf-rt-management (132) [org.apache.cxf.management.InstrumentationManager]
+25-Jun-2022 08:44:56.991 INFO [features-3-thread-1] org.apache.cxf.bus.osgi.CXFExtensionBundleListener.addExtensions Adding the extensions from bundle org.apache.cxf.cxf-rt-rs-service-description (137) [org.apache.cxf.jaxrs.model.wadl.WadlGenerator]
+25-Jun-2022 08:44:56.991 INFO [features-3-thread-1] org.apache.cxf.bus.osgi.CXFExtensionBundleListener.addExtensions Adding the extensions from bundle org.apache.cxf.cxf-rt-transports-http (139) [org.apache.cxf.transport.http.HTTPTransportFactory, org.apache.cxf.transport.http.HTTPWSDLExtensionLoader, org.apache.cxf.transport.http.policy.HTTPClientAssertionBuilder, org.apache.cxf.transport.http.policy.HTTPServerAssertionBuilder, org.apache.cxf.transport.http.policy.NoOpPolicyInterceptorProvider]
+25-Jun-2022 08:44:57.862 INFO [features-3-thread-1] org.apache.cxf.endpoint.ServerImpl.initDestination Setting the server's publish address to be /i18n
+25-Jun-2022 08:45:02.630 INFO [features-3-thread-1] org.apache.cxf.bus.osgi.CXFExtensionBundleListener.unregister Removing the extensions for bundle 132
+25-Jun-2022 08:45:02.630 INFO [features-3-thread-1] org.apache.cxf.bus.osgi.CXFExtensionBundleListener.unregister Removing the extensions for bundle 137
+25-Jun-2022 08:45:02.630 INFO [features-3-thread-1] org.apache.cxf.bus.osgi.CXFExtensionBundleListener.unregister Removing the extensions for bundle 139
+25-Jun-2022 08:45:13.153 INFO [features-3-thread-1] org.apache.cxf.bus.osgi.CXFExtensionBundleListener.addExtensions Adding the extensions from bundle org.apache.cxf.cxf-rt-management (132) [org.apache.cxf.management.InstrumentationManager]
+25-Jun-2022 08:45:13.156 INFO [features-3-thread-1] org.apache.cxf.bus.osgi.CXFExtensionBundleListener.addExtensions Adding the extensions from bundle org.apache.cxf.cxf-rt-rs-service-description (137) [org.apache.cxf.jaxrs.model.wadl.WadlGenerator]
+25-Jun-2022 08:45:13.158 INFO [features-3-thread-1] org.apache.cxf.bus.osgi.CXFExtensionBundleListener.addExtensions Adding the extensions from bundle org.apache.cxf.cxf-rt-transports-http (139) [org.apache.cxf.transport.http.HTTPTransportFactory, org.apache.cxf.transport.http.HTTPWSDLExtensionLoader, org.apache.cxf.transport.http.policy.HTTPClientAssertionBuilder, org.apache.cxf.transport.http.policy.HTTPServerAssertionBuilder, org.apache.cxf.transport.http.policy.NoOpPolicyInterceptorProvider]
+25-Jun-2022 08:45:14.168 INFO [Blueprint Extender: 1] org.apache.cxf.endpoint.ServerImpl.initDestination Setting the server's publish address to be /i18n
+25-Jun-2022 08:45:14.259 INFO [features-3-thread-1] org.apache.cxf.endpoint.ServerImpl.initDestination Setting the server's publish address to be /hadoop-cluster
+25-Jun-2022 08:45:16.232 INFO [features-3-thread-1] org.apache.cxf.endpoint.ServerImpl.initDestination Setting the server's publish address to be /get-fields
+25-Jun-2022 08:45:16.636 INFO [features-3-thread-1] org.apache.cxf.endpoint.ServerImpl.initDestination Setting the server's publish address to be /lineage
+25-Jun-2022 08:45:17.022 INFO [features-3-thread-1] org.apache.cxf.endpoint.ServerImpl.initDestination Setting the server's publish address to be /marketplace
+25-Jun-2022 08:45:38.027 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/pentaho] has finished in [80,273] ms
+25-Jun-2022 08:45:38.028 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/sw-style]
+25-Jun-2022 08:45:38.799 INFO [localhost-startStop-1] org.apache.jasper.servlet.TldScanner.scanJars At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+25-Jun-2022 08:45:38.800 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/sw-style] has finished in [772] ms
+25-Jun-2022 08:45:38.805 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
+25-Jun-2022 08:45:38.822 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["ajp-nio-8009"]
+25-Jun-2022 08:45:38.845 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in 83222 ms
+25-Jun-2022 09:01:40.726 WARNING [main] org.apache.catalina.startup.SetAllPropertiesRule.begin [SetAllPropertiesRule]{Server/Service/Connector} Setting property 'relaxedPathChars' to '[]|' did not find a matching property.
+25-Jun-2022 09:01:40.745 WARNING [main] org.apache.catalina.startup.SetAllPropertiesRule.begin [SetAllPropertiesRule]{Server/Service/Connector} Setting property 'relaxedQueryChars' to '^{}[]|&' did not find a matching property.
+25-Jun-2022 09:01:40.746 WARNING [main] org.apache.catalina.startup.SetAllPropertiesRule.begin [SetAllPropertiesRule]{Server/Service/Connector} Setting property 'maxHttpHeaderSize' to '65536' did not find a matching property.
+25-Jun-2022 09:01:40.867 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version:        Apache Tomcat/8.5.34
+25-Jun-2022 09:01:40.868 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server built:          Sep 4 2018 22:28:22 UTC
+25-Jun-2022 09:01:40.869 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server number:         8.5.34.0
+25-Jun-2022 09:01:40.871 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Name:               Linux
+25-Jun-2022 09:01:40.872 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Version:            5.15.48-1-MANJARO
+25-Jun-2022 09:01:40.873 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Architecture:          amd64
+25-Jun-2022 09:01:40.874 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Java Home:             /usr/local/openjdk-8/jre
+25-Jun-2022 09:01:40.874 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Version:           1.8.0_332-b09
+25-Jun-2022 09:01:40.876 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Vendor:            Oracle Corporation
+25-Jun-2022 09:01:40.877 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_BASE:         /opt/pentaho/pentaho-server/tomcat
+25-Jun-2022 09:01:40.878 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_HOME:         /opt/pentaho/pentaho-server/tomcat
+25-Jun-2022 09:01:40.879 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.config.file=/opt/pentaho/pentaho-server/tomcat/conf/logging.properties
+25-Jun-2022 09:01:40.880 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+25-Jun-2022 09:01:40.881 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djdk.tls.ephemeralDHKeySize=2048
+25-Jun-2022 09:01:40.882 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.protocol.handler.pkgs=org.apache.catalina.webresources
+25-Jun-2022 09:01:40.883 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dorg.apache.catalina.security.SecurityListener.UMASK=0027
+25-Jun-2022 09:01:40.884 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Xms2048m
+25-Jun-2022 09:01:40.890 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Xmx6144m
+25-Jun-2022 09:01:40.891 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -XX:MaxPermSize=256m
+25-Jun-2022 09:01:40.892 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dsun.rmi.dgc.client.gcInterval=3600000
+25-Jun-2022 09:01:40.893 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dsun.rmi.dgc.server.gcInterval=3600000
+25-Jun-2022 09:01:40.894 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dfile.encoding=utf8
+25-Jun-2022 09:01:40.895 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -DDI_HOME=/opt/pentaho/pentaho-server/pentaho-solutions/system/kettle
+25-Jun-2022 09:01:40.895 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dignore.endorsed.dirs=
+25-Jun-2022 09:01:40.896 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.base=/opt/pentaho/pentaho-server/tomcat
+25-Jun-2022 09:01:40.897 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.home=/opt/pentaho/pentaho-server/tomcat
+25-Jun-2022 09:01:40.899 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.io.tmpdir=/opt/pentaho/pentaho-server/tomcat/temp
+25-Jun-2022 09:01:40.901 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib]
+25-Jun-2022 09:01:41.255 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["http-nio-8080"]
+25-Jun-2022 09:01:41.296 INFO [main] org.apache.tomcat.util.net.NioSelectorPool.getSharedSelector Using a shared selector for servlet write/read
+25-Jun-2022 09:01:41.317 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["ajp-nio-8009"]
+25-Jun-2022 09:01:41.323 INFO [main] org.apache.tomcat.util.net.NioSelectorPool.getSharedSelector Using a shared selector for servlet write/read
+25-Jun-2022 09:01:41.332 INFO [main] org.apache.catalina.startup.Catalina.load Initialization processed in 1759 ms
+25-Jun-2022 09:01:41.410 INFO [main] org.apache.catalina.core.StandardService.startInternal Starting service [Catalina]
+25-Jun-2022 09:01:41.410 INFO [main] org.apache.catalina.core.StandardEngine.startInternal Starting Servlet Engine: Apache Tomcat/8.5.34
+25-Jun-2022 09:01:41.447 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/ROOT]
+25-Jun-2022 09:01:42.912 INFO [localhost-startStop-1] org.apache.jasper.servlet.TldScanner.scanJars At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+25-Jun-2022 09:01:43.005 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/ROOT] has finished in [1,557] ms
+25-Jun-2022 09:01:43.005 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/pentaho-style]
+25-Jun-2022 09:01:43.706 INFO [localhost-startStop-1] org.apache.jasper.servlet.TldScanner.scanJars At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+25-Jun-2022 09:01:43.710 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/pentaho-style] has finished in [704] ms
+25-Jun-2022 09:01:43.710 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/opt/pentaho/pentaho-server/tomcat/webapps/pentaho]
+25-Jun-2022 09:01:43.715 WARNING [localhost-startStop-1] org.apache.catalina.startup.SetContextPropertiesRule.begin [SetContextPropertiesRule]{Context} Setting property 'docbase' to 'webapps/pentaho/' did not find a matching property.
+25-Jun-2022 09:02:04.970 INFO [localhost-startStop-1] org.apache.jasper.servlet.TldScanner.scanJars At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+25-Jun-2022 09:02:05.979 INFO [HSQLDB Server @29f54cbe] org.hsqldb.persist.Logger.logInfoEvent checkpointClose start
+25-Jun-2022 09:02:06.312 INFO [HSQLDB Server @29f54cbe] org.hsqldb.persist.Logger.logInfoEvent checkpointClose end
+25-Jun-2022 09:02:06.374 INFO [HSQLDB Server @29f54cbe] org.hsqldb.persist.Logger.logInfoEvent checkpointClose start
+25-Jun-2022 09:02:06.428 INFO [HSQLDB Server @29f54cbe] org.hsqldb.persist.Logger.logInfoEvent checkpointClose end
+25-Jun-2022 09:02:06.481 INFO [HSQLDB Server @29f54cbe] org.hsqldb.persist.Logger.logInfoEvent checkpointClose start
+25-Jun-2022 09:02:06.514 INFO [HSQLDB Server @29f54cbe] org.hsqldb.persist.Logger.logInfoEvent checkpointClose end
+25-Jun-2022 09:02:11.300 INFO [localhost-startStop-1] org.apache.karaf.main.Main.launch Installing and starting initial bundles
+25-Jun-2022 09:02:11.774 INFO [localhost-startStop-1] org.apache.karaf.main.Main.launch All initial bundles installed and set to start
+25-Jun-2022 09:02:13.054 INFO [Karaf Lock Monitor Thread] org.apache.karaf.main.Main$KarafLockCallback.lockAcquired Lock acquired. Setting startlevel to 100
+25-Jun-2022 09:03:02.229 INFO [features-3-thread-1] org.pentaho.caching.impl.PentahoCacheManagerFactory$RegistrationHandler$1.onSuccess New Caching Service registered

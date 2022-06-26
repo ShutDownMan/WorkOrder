@@ -3,12 +3,12 @@ import cors from 'cors';
 import multer from "multer";
 import { deleteDeviceHandler, getDeviceByIDHandler, patchDeviceHandler, postDeviceHandler, getDevicesHandler, postDeviceFromJsonHandler, postDeviceFromExcelHandler } from './Device/device';
 import { deleteClientByIDHandler, getClientByIDHandler, getClientsHandler, patchClientByIDHandler, postClientHandler } from './Client/client';
-import { deleteServiceHandler, getServiceByIDHandler, getServicesHandler, patchServiceHandler, postServiceHandler } from './Service/service';
-import { deleteWorkOrderHandler, getWorkOrdersByIDHandler, getWorkOrdersHandler, patchWorkOrderHandler, postWorkOrderHandler } from './WorkOrder/work-order';
+import { deleteServiceHandler, getServiceByIDHandler, getServicesHandler, getTopNServicesByDeviceHandler, patchServiceHandler, postServiceHandler } from './Service/service';
+import { deleteWorkOrderHandler, getWorkOrdersByIDHandler, getWorkOrdersHandler, getWorkWordersOfToday, patchWorkOrderHandler, postWorkOrderHandler } from './WorkOrder/work-order';
 import { deleteTaskHandler, getTaskByIDHandler, getTasksHandler, patchTaskHandler, postTaskHandler } from './Task/task';
 
 const app: Express = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 const upload = multer();
 
@@ -59,6 +59,8 @@ app.delete("/device", deleteDeviceHandler);
 
 app.get("/services", getServicesHandler);
 
+app.get("/services/top", getTopNServicesByDeviceHandler);
+
 app.get("/service", getServiceByIDHandler);
 
 app.post("/service", postServiceHandler);
@@ -84,6 +86,8 @@ app.delete("/task", deleteTaskHandler);
 /// WorkOrder Handlers
 
 app.get("/work-orders", getWorkOrdersHandler);
+
+app.get("/work-orders/today", getWorkWordersOfToday);
 
 app.get("/work-order", getWorkOrdersByIDHandler);
 

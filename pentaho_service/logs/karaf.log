@@ -1,0 +1,21 @@
+Jun 25, 2022 8:44:42 AM org.apache.karaf.main.Main launch
+INFO: Installing and starting initial bundles
+Jun 25, 2022 8:44:42 AM org.apache.karaf.main.Main launch
+INFO: All initial bundles installed and set to start
+Jun 25, 2022 8:44:43 AM org.apache.karaf.main.Main$KarafLockCallback lockAcquired
+INFO: Lock acquired. Setting startlevel to 100
+2022-06-25T08:44:46,990 | INFO  | features-3-thread-1 | bridge                           | 18 - org.apache.felix.http.bridge - 4.0.6 | Started bridged http services
+2022-06-25T08:44:56,857 | INFO  | features-3-thread-1 | whiteboard                       | 141 - org.apache.felix.http.whiteboard - 4.0.0 | Apachde Felix Http Whiteboard Service started
+2022-06-25T08:44:57,992 | INFO  | fileinstall-/opt/pentaho/pentaho-server/pentaho-solutions/system/karaf/etc | fileinstall                      | 10 - org.apache.felix.fileinstall - 3.6.4 | Creating configuration from pentaho.big.data.impl.cluster.cfg
+2022-06-25T08:45:06,323 | INFO  | fileinstall-/opt/pentaho/pentaho-server/pentaho-solutions/system/karaf/etc | fileinstall                      | 10 - org.apache.felix.fileinstall - 3.6.4 | Creating configuration from pentaho.geo.roles.cfg
+2022-06-25T08:45:06,409 | INFO  | fileinstall-/opt/pentaho/pentaho-server/pentaho-solutions/system/karaf/etc | fileinstall                      | 10 - org.apache.felix.fileinstall - 3.6.4 | Creating configuration from pentaho.metaverse.cfg
+2022-06-25T08:45:06,412 | INFO  | fileinstall-/opt/pentaho/pentaho-server/pentaho-solutions/system/karaf/etc | fileinstall                      | 10 - org.apache.felix.fileinstall - 3.6.4 | Creating configuration from pentaho.marketplace.ba.cfg
+2022-06-25T08:45:12,439 | INFO  | features-3-thread-1 | core                             | 214 - org.apache.aries.jmx.core - 1.1.8 | Starting JMX OSGi agent
+2022-06-25T08:45:12,471 | INFO  | features-3-thread-1 | core                             | 214 - org.apache.aries.jmx.core - 1.1.8 | Registering MBean with ObjectName [osgi.compendium:service=cm,version=1.3,framework=org.apache.felix.framework,uuid=ae35bda3-4d71-4e36-b0f2-795dae1b0252] for service with service.id [13]
+Jun 25, 2022 9:02:11 AM org.apache.karaf.main.Main launch
+INFO: Installing and starting initial bundles
+Jun 25, 2022 9:02:11 AM org.apache.karaf.main.Main launch
+INFO: All initial bundles installed and set to start
+Jun 25, 2022 9:02:13 AM org.apache.karaf.main.Main$KarafLockCallback lockAcquired
+INFO: Lock acquired. Setting startlevel to 100
+2022-06-25T09:02:29,702 | INFO  | features-3-thread-1 | bridge                           | 18 - org.apache.felix.http.bridge - 4.0.6 | Started bridged http services

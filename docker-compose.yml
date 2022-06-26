@@ -3,11 +3,12 @@ services:
   postgres:
     image: postgres:alpine
     ports:
-      - 5442:5432
+      - 5442:${POSTGRES_PORT}
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PORT: ${POSTGRES_PORT}
     volumes:
       - ./postgres_service/postgresql:/var/lib/postgresql
       - ./postgres_service/setup:/docker-entrypoint-initdb.d
@@ -16,7 +17,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - 8080:8080
+      - 3000:3000
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -24,17 +25,13 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PORT: ${POSTGRES_PORT}
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}
-  pentaho:
-      container_name: pentaho
-      image: ca0abinary/docker-pentaho
-      depends_on:
-          - pentaho-pg
-      ports:
-          - 8081:8080
-      environment:
-          HOST: pentaho-pg
-          USER: ${POSTGRES_USER}
-          PASSWORD: ${POSTGRES_PASSWORD}
-      volumes:
-          - ./pentaho_service/pentaho-hsqldb-data:/opt/pentaho/server/pentaho-server/data/hsqldb
-          - ./pentaho_service/pentaho-jackrabbit-data:/opt/pentaho/server/pentaho-server/pentaho-solutions/system/jackrabbit/repository
+  # pentaho:
+  #   build: ./pentaho_service
+  #   ports:
+  #     - 8081:8080
+  #   volumes:
+  #     - ./pentaho_service/data/pentaho-hsqldb-data:/opt/pentaho/pentaho-server/data/hsqldb:rw
+  #     - ./pentaho_service/data/pentaho-jackrabbit-data:/opt/pentaho/pentaho-server/pentaho-solutions/system/jackrabbit/repository:rw
+  #     - ./pentaho_service/logs:/opt/pentaho/pentaho-server/tomcat/logs
+  #   environment:
+  #     TZ: America/Sao_Paulo
