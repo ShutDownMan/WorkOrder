@@ -1,8 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Service } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { assert, object, string, nullable, size, refine, optional, number } from 'superstruct'
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
+import { faker } from '@faker-js/faker';
 
 /// model for getting all services
 const ServicesGet = object({
@@ -180,6 +181,38 @@ export async function postServiceHandler(req: Request, res: Response, next: Next
             type: HandlerErrors.DatabaseError
         };
 
+        return res.status(500).json(errorRes);
+    }
+}
+
+/// endpoint to create a new dummy service using faker
+export async function postDummyServiceHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    /// create a new dummy service using faker
+    let dummyService = {
+        description: faker.lorem.sentence(4),
+        estimatedTimeCost: faker.datatype.number({ min: 0, max: 100 }),
+        estimatedMaterialCost: faker.datatype.number({ min: 0, max: 100 }),
+    };
+
+    /// insert service in the database
+    try {
+        const service = await prisma.service.create({
+            data: dummyService
+        });
+
+        /// return newly added service identifier
+        return res.status(200).json(service);
+        
+    } catch (error) {
+        console.log("Error trying to insert new service: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Server Error, couldn't insert data into the database.",
+            type: HandlerErrors.DatabaseError
+        };
+        
         return res.status(500).json(errorRes);
     }
 }
@@ -401,4 +434,42 @@ export async function getTopNServicesByRevenueHandler(req: Request, res: Respons
 
         return res.status(500).json(errorRes);
     }
+}
+
+/// get random service
+export async function getRandomService(): Promise<Service | HandlerError> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    let service;
+    try {
+        /// get a random service
+        service = await prisma.$queryRaw<Service[]>`SELECT * FROM "Service" ORDER BY RANDOM() LIMIT 1`;
+    } catch (error) {
+        console.log("Error trying to get random service: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Server Error, couldn't get random service.",
+            type: HandlerErrors.DatabaseError
+        };
+
+        return errorRes;
+    }
+
+    // try {
+    //     /// assert the query was sucessful
+    //     assert(service, ServicePatchingModel);
+    // } catch (error) {
+    //     /// error trying to fetch a random service
+    //     console.log("Error trying to fetch a random service: ", error);
+
+    //     let errorRes: HandlerError = {
+    //         message: "Server Error, couldn't fetch a random service.",
+    //         type: HandlerErrors.DatabaseError
+    //     };
+
+    //     return errorRes;
+    // }
+
+    /// return the random service
+    return service[0];
 }

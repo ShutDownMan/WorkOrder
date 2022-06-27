@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { Client, PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import { assert, object, string, nullable, optional, size, refine, omit, number } from 'superstruct'
+import { assert, object, string, nullable, optional, size, refine, omit, number, partial } from 'superstruct'
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
 import { isEmail } from "../Validations/email";
@@ -425,7 +425,7 @@ export async function postClientDummyHandler(req: Request, res: Response, next: 
                 },
                 Phone: {
                     create: {
-                        number: faker.phone.phoneNumber()
+                        number: faker.phone.phoneNumber("+55 (45) # #### ####")
                     }
                 }
             }
@@ -443,4 +443,42 @@ export async function postClientDummyHandler(req: Request, res: Response, next: 
 
         return res.status(500).json(errorRes);
     }
+}
+
+/// get random client
+export async function getRandomClient(): Promise<Client | HandlerError> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    let client;
+    try {
+        /// get a random client
+        client = await prisma.$queryRaw<Client[]>`SELECT * FROM "Client" ORDER BY RANDOM() LIMIT 1`;
+    } catch (error) {
+        console.log("Error trying to get random client: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Server Error, couldn't get random client.",
+            type: HandlerErrors.DatabaseError
+        };
+
+        return errorRes;
+    }
+
+    // try {
+    //     /// assert the query was sucessful
+    //     assert(client, partial({ id: string() }));
+    // } catch (error) {
+    //     /// error trying to fetch a random client
+    //     console.log("Error trying to fetch a random client: ", error);
+
+    //     let errorRes: HandlerError = {
+    //         message: "Server Error, couldn't fetch a random client.",
+    //         type: HandlerErrors.DatabaseError
+    //     };
+
+    //     return errorRes;
+    // }
+
+    /// return the random client
+    return client[0];
 }

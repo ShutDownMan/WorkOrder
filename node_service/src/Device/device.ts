@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { Device, PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import { assert, object, string, nullable, size, refine, optional, number, unknown } from 'superstruct'
+import { assert, object, string, nullable, size, refine, optional, number, unknown, partial } from 'superstruct'
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
 import Excel from 'exceljs';
@@ -195,7 +195,7 @@ export async function postDeviceDummyHandler(req: Request, res: Response, next: 
         model: faker.commerce.productName(),
         photoURL: faker.image.imageUrl(),
         sku: faker.datatype.uuid(),
-        description: faker.lorem.paragraph(),
+        description: faker.lorem.sentence(6),
     };
 
     /// insert device in the database
@@ -205,7 +205,7 @@ export async function postDeviceDummyHandler(req: Request, res: Response, next: 
         });
 
         /// return newly added device identifier
-        return res.status(200).json({ id: newDevice.id });
+        return res.status(200).json(newDevice);
 
     } catch (error) {
         console.log("Error trying to insert new device: ", error);
@@ -544,4 +544,41 @@ export async function getDeviceModelsHandler(req: Request, res: Response, next: 
 
         return res.status(500).json(errorRes);
     }
+}
+
+/// get random device
+export async function getRandomDevice(): Promise<Device | HandlerError> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    let device;
+    try {
+        /// get a random device
+        device = await prisma.$queryRaw<Device[]>`SELECT * FROM "Device" ORDER BY RANDOM() LIMIT 1`;
+    } catch (error) {
+        console.log("Error trying to get random device: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Server Error, couldn't find random device.",
+            type: HandlerErrors.DatabaseError
+        };
+
+        return errorRes;
+    }
+
+    // try {
+    //     /// assert the query was sucessful
+    //     assert(device, DevicePatchingModel);
+    // } catch (error) {
+    //     /// error trying to fetch a random device
+    //     console.log("Error trying to fetch a random device: ", error);
+
+    //     let errorRes: HandlerError = {
+    //         message: "Server Error, couldn't fetch a random device.",
+    //         type: HandlerErrors.DatabaseError
+    //     };
+
+    //     return errorRes;
+    // }
+
+    return device[0];
 }

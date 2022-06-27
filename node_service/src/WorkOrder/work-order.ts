@@ -1,10 +1,14 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import { assert, object, string, array, optional, number } from 'superstruct'
+import { assert, object, string, array, optional, number, partial } from 'superstruct'
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
 import { v4 as uuidv4 } from 'uuid';
 import lodash from "lodash";
+import { faker } from '@faker-js/faker';
+import { getRandomClient } from "../Client/client";
+import { getRandomDevice } from "../Device/device";
+import { getRandomService } from "../Service/service";
 
 export enum WorkOrderStatusList {
     APROVACAO = 1,
@@ -260,11 +264,27 @@ export async function postWorkOrderHandler(req: Request, res: Response, next: Ne
             data: workOrderData
         });
 
+        /// if there is a list of tasks to be inserted
         if (postedWorkOrder.tasks) {
+            /// for each task to be inserted
             for (let postedTask of postedWorkOrder.tasks) {
+                /// get all services of the task
+                let servicesPromises = postedTask.services.map(service => {
+                    return prisma.service.findUnique({
+                        where: {
+                            id: service.id
+                        }
+                    });
+                });
+
+                /// await all service promises
+                let services = await Promise.all(servicesPromises);
+
                 /// task data to be inserted into the database
                 let taskData: Prisma.TaskCreateInput = {
                     description: postedTask.description,
+                    timeCost: services.reduce((acc, service) => acc + Number(service?.estimatedTimeCost || 0), 0),
+                    materialCost: services.reduce((acc, service) => acc + Number(service?.estimatedMaterialCost || 0), 0),
                     WorkOrder: {
                         connect: {
                             id: workOrder.id,
@@ -357,7 +377,7 @@ async function calculateWorkOrderTotalCost(workOrderID: string): Promise<any> {
     let totalCost = 0;
     for (let task of tasks) {
         for (let taskService of task.Task_Service) {
-            totalCost += Number(taskService.Service.estimatedMaterialCost) + Number(taskService.Service.estimatedTimeCost) * 14.5;
+            totalCost += Number(taskService.Service.estimatedMaterialCost) + (Number(taskService.Service.estimatedTimeCost) / 60) * 14.5;
         }
     }
 
@@ -372,6 +392,137 @@ async function calculateWorkOrderTotalCost(workOrderID: string): Promise<any> {
     });
 }
 
+/// endpoint to create a dummy workOrder using faker
+export async function postDummyWorkOrderHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    /// create a dummy workOrder
+    let dummyWorkOrder = {
+        id: uuidv4(),
+        obs: faker.lorem.sentence(),
+        client: (await getRandomClient()),
+    };
+
+    let workOrder;
+    try {
+        /// insert dummy workOrder in the database using prisma
+        workOrder = await prisma.workOrder.create({
+            data: {
+                id: dummyWorkOrder.id,
+                obs: dummyWorkOrder.obs,
+                Client: {
+                    connect: {
+                        id: 'id' in dummyWorkOrder.client ? dummyWorkOrder.client.id : "-1",
+                    }
+                },
+                // totalCost: totalMaterialCost + totalTimeCost,
+                WorkOrderStatus: {
+                    connect: {
+                        id: 1,
+                    }
+                },
+            }
+        });
+
+    } catch (error) {
+        console.log("Error trying to insert new workOrder: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Server Error, couldn't insert data into the database.",
+            type: HandlerErrors.DatabaseError
+        };
+
+        return res.status(500).json(errorRes);
+    }
+
+    /// run through the tasks of the dummy workOrder
+    /// random range of tasks to be inserted
+    let tasksRange = Math.floor(1 + Math.random() * 9);
+    for (let i = 0; i < tasksRange; i++) {
+        let totalMaterialCost = 0;
+        let totalTimeCost = 0;
+
+        let task_services = [];
+
+        /// run through the services of the task
+        /// random range of services to be inserted
+        let servicesRange = Math.floor(1 + Math.random() * 4);
+        for (let j = 0; j < servicesRange; j++) {
+            let service = await getRandomService();
+            task_services.push(service);
+            let dbService;
+            try {
+                /// get service from the database
+                dbService = await prisma.service.findUnique({
+                    where: {
+                        id: 'id' in service ? service.id : -1
+                    }
+                });
+            } catch (error) {
+                console.log("Error trying to insert new service: ", error);
+
+                let errorRes: HandlerError = {
+                    message: "Server Error, couldn't insert data into the database.",
+                    type: HandlerErrors.DatabaseError
+                };
+
+                return res.status(500).json(errorRes);
+            }
+
+            /// add the estimated material cost of the service to the total material cost
+            totalMaterialCost += Number(dbService?.estimatedMaterialCost);
+
+            /// add the estimated time cost of the service to the total time cost
+            totalTimeCost += Number(dbService?.estimatedTimeCost);
+        }
+
+        try {
+            let device = await getRandomDevice();
+            /// insert task in the database
+            let task = await prisma.task.create({
+                data: {
+                    description: faker.lorem.sentence(),
+                    timeCost: totalTimeCost,
+                    materialCost: totalMaterialCost,
+                    WorkOrder: {
+                        connect: {
+                            id: dummyWorkOrder.id,
+                        }
+                    },
+                    Device: {
+                        connect: {
+                            id: 'id' in device ? device.id : -1,
+                        }
+                    },
+                    Task_Service: {
+                        createMany: {
+                            data: task_services.map(service => {
+                                return {
+                                    id_Service: 'id' in service ? service.id : -1,
+                                }
+                            }),
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.log("Error trying to insert new task: ", error);
+
+            let errorRes: HandlerError = {
+                message: "Server Error, couldn't insert data into the database.",
+                type: HandlerErrors.DatabaseError
+            };
+
+            return res.status(500).json(errorRes);
+        }
+    }
+
+    /// update the total cost of the workOrder
+    await calculateWorkOrderTotalCost(dummyWorkOrder.id);
+
+    /// return newly added workOrder identifier
+    return res.status(200).json({ id: workOrder.id });
+}
 
 export async function patchWorkOrderHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     /// validate input
@@ -725,7 +876,7 @@ export async function getWorkOrdersReportHandler(req: Request, res: Response, ne
             count: workOrders.length,
             revenue: workOrdersRevenue,
             average_revenue: workOrdersRevenue / workOrders.length,
-            average_attendances: workOrders.length / (startDate - startDate) / (1000 * 60 * 60 * 24),
+            average_attendances: workOrders.length / (endDate - startDate) / (1000 * 60 * 60 * 24),
             average_time_to_complete: workOrders
                 .filter(workOrder => workOrder.finishedAt)
                 .reduce((acc, workOrder) => {

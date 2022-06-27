@@ -3,9 +3,9 @@ import cors from 'cors';
 import multer from "multer";
 import { deleteDeviceHandler, getDeviceByIDHandler, patchDeviceHandler, postDeviceHandler, getDevicesHandler, postDeviceFromJsonHandler, postDeviceFromExcelHandler, getDeviceBrandsHandler, getDeviceModelsHandler, postDeviceDummyHandler } from './Device/device';
 import { deleteClientByIDHandler, getClientByIDHandler, getClientsHandler, patchClientByIDHandler, postClientDummyHandler, postClientHandler } from './Client/client';
-import { deleteServiceHandler, getServiceByIDHandler, getServicesHandler, getTopNServicesByDeviceHandler, getTopNServicesByRevenueHandler, patchServiceHandler, postServiceHandler } from './Service/service';
-import { deleteWorkOrderHandler, getWorkOrdersByIDHandler, getWorkOrdersHandler, getWorkOrdersReportHandler, getWorkWordersByInterval as getWorkWordersByIntervalHandler, getWorkWordersOfToday as getWorkWordersOfTodayHandler, patchWorkOrderHandler, postWorkOrderHandler } from './WorkOrder/work-order';
-import { deleteTaskHandler, getTaskByIDHandler, getTasksHandler, patchTaskHandler, postTaskHandler } from './Task/task';
+import { deleteServiceHandler, getServiceByIDHandler, getServicesHandler, getTopNServicesByDeviceHandler, getTopNServicesByRevenueHandler, patchServiceHandler, postDummyServiceHandler, postServiceHandler } from './Service/service';
+import { deleteWorkOrderHandler, getWorkOrdersByIDHandler, getWorkOrdersHandler, getWorkOrdersReportHandler, getWorkWordersByInterval as getWorkWordersByIntervalHandler, getWorkWordersOfToday as getWorkWordersOfTodayHandler, patchWorkOrderHandler, postDummyWorkOrderHandler, postWorkOrderHandler } from './WorkOrder/work-order';
+import { deleteTaskHandler, getTaskByIDHandler, getTasksHandler, patchTaskHandler, postDummyTaskHandler, postTaskHandler } from './Task/task';
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -94,6 +94,9 @@ app.get("/service", getServiceByIDHandler);
 /// endpoint to create new service
 app.post("/service", postServiceHandler);
 
+/// endpoint to create a dummy service
+app.post("/service/dummy", postDummyServiceHandler);
+
 /// endpoint to update service
 app.patch("/service", patchServiceHandler);
 
@@ -111,6 +114,9 @@ app.get("/task", getTaskByIDHandler);
 
 /// endpoint to insert a new task
 app.post("/task", postTaskHandler);
+
+/// endpoint to create a dummy task
+app.post("/task/dummy", postDummyTaskHandler);
 
 /// endpoint to update a task
 app.patch("/task", patchTaskHandler);
@@ -136,8 +142,12 @@ app.post("/work-orders/report", getWorkOrdersReportHandler);
 /// endpoint for getting work order by id
 app.get("/work-order", getWorkOrdersByIDHandler);
 
-/// calculate cost on insert
+/// endpoint to update work order
+/// TODO: update finished date when status changes to finished
 app.post("/work-order", postWorkOrderHandler);
+
+/// enpoint to insert a new dummy work order
+app.post("/work-order/dummy", postDummyWorkOrderHandler);
 
 /// endpoint for updating work order
 app.patch("/work-order", patchWorkOrderHandler);

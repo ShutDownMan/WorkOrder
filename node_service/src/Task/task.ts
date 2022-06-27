@@ -1,8 +1,9 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import { assert, object, string, array, optional, number } from 'superstruct'
+import { assert, object, string, array, optional, number, partial } from 'superstruct'
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
+import { faker } from '@faker-js/faker';
 
 /// model for getting all tasks
 const TasksGet = object({
@@ -215,6 +216,81 @@ export async function postTaskHandler(req: Request, res: Response, next: NextFun
 
         return res.status(500).json(errorRes);
     }
+}
+
+/// endpoint to create a new dummy task using faker
+export async function postDummyTaskHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+    return res.status(404).json({ message: "not implemented" });
+    // const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    // /// get random device from database using prisma
+    // let device = await prisma.$queryRaw`SELECT * FROM "Device" ORDER BY RANDOM() LIMIT 1`;
+
+    // try {
+    //     /// assert the query was sucessful
+    //     assert(device, partial({id: number()}));
+    // } catch (error) {
+    //     /// error trying to fetch a random device
+    //     console.log("Error trying to fetch a random device: ", error);
+
+    //     let errorRes: HandlerError = {
+    //         message: "Server Error, couldn't fetch a random device.",
+    //         type: HandlerErrors.DatabaseError
+    //     };
+
+    //     return res.status(500).json(errorRes);
+    // }
+
+    // /// create a dummy task using faker
+    // let dummyTask = {
+    //     workOrderID: faker.datatype.uuid(),
+    //     deviceID: device.id,
+    //     description: faker.lorem.sentence(8),
+    //     materialCost: faker.datatype.number(),
+    //     timeCost: faker.datatype.number(),
+    //     services: [
+    //         {
+    //             id: faker.datatype.number(),
+    //         }
+    //     ]
+    // };
+
+    // /// data to be inserted into the database
+    // let taskData: Prisma.TaskCreateInput = {
+    //     WorkOrder: {
+    //         connect: {
+    //             id: dummyTask.workOrderID,
+    //         }
+    //     },
+    //     Device: {
+    //         connect: {
+    //             id: dummyTask.deviceID,
+    //         }
+    //     },
+    //     description: dummyTask.description,
+    //     materialCost: dummyTask.materialCost,
+    //     timeCost: dummyTask.timeCost,
+    // };
+
+    // try {
+    //     /// insert task in the database
+    //     const task = await prisma.task.create({
+    //         data: taskData
+    //     });
+
+    //     /// return newly added task identifier
+    //     return res.status(200).json({ id: task.id });
+
+    // } catch (error) {
+    //     console.log("Error trying to insert new task: ", error);
+
+    //     let errorRes: HandlerError = {
+    //         message: "Server Error, couldn't insert data into the database.",
+    //         type: HandlerErrors.DatabaseError
+    //     };
+
+    //     return res.status(500).json(errorRes);
+    // }
 }
 
 export async function patchTaskHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
