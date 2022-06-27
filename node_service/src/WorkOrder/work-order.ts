@@ -70,7 +70,9 @@ const WorkOrderPatchingModel = object({
     tasks: optional(array(TaskPatchingModel)),
     workOrderStatus: optional(object({
         id: number(),
-    }))
+    })),
+    startDate: optional(number()),
+    finishedDate: optional(number()),
 });
 
 /// WorkOrder model to get report by period
@@ -407,6 +409,14 @@ export async function patchWorkOrderHandler(req: Request, res: Response, next: N
                     }
                 }
             }),
+            /// update start date if one was passed
+            ...(workOrderUpdates.startDate && {
+                startDate: workOrderUpdates.startDate,
+            }),
+            /// update finished date if one was passed
+            ...(workOrderUpdates.finishedDate && {
+                finishedDate: workOrderUpdates.finishedDate,
+            }),
         };
 
         /// if tasks were passed
@@ -431,7 +441,6 @@ export async function patchWorkOrderHandler(req: Request, res: Response, next: N
                         }),
                     }
                 });
-
                 transactions.push(taskUpdate);
             }
         }

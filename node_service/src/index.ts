@@ -80,19 +80,25 @@ app.delete("/service", deleteServiceHandler);
 
 /// Task Handlers
 
+/// endpoint to get all tasks
 app.get("/tasks", getTasksHandler);
 
+/// endpoint to get a task by id
 app.get("/task", getTaskByIDHandler);
 
+/// endpoint to insert a new task
 app.post("/task", postTaskHandler);
 
+/// endpoint to update a task
 app.patch("/task", patchTaskHandler);
 
+/// endpoint to delete a task
 app.delete("/task", deleteTaskHandler);
 
 
 /// WorkOrder Handlers
 
+/// endpoint to get all work orders
 app.get("/work-orders", getWorkOrdersHandler);
 
 app.post("/work-orders/today", getWorkWordersOfTodayHandler);
@@ -101,12 +107,15 @@ app.post("/work-orders/from-interval", getWorkWordersByIntervalHandler);
 
 app.post("/work-orders/report", getWorkOrdersReportHandler);
 
+/// endpoint for getting work order by id
 app.get("/work-order", getWorkOrdersByIDHandler);
 
 /// calculate cost on insert
 app.post("/work-order", postWorkOrderHandler);
 
-/// TODO: update finish date on update
+/// endpoint for updating work order
+/// TODO: make possible to update starting date
 app.patch("/work-order", patchWorkOrderHandler);
 
+/// endpoint for deleting work order
 app.delete("/work-order", deleteWorkOrderHandler);
