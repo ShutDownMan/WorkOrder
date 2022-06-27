@@ -1,8 +1,8 @@
 import express, { Express } from 'express';
 import cors from 'cors';
 import multer from "multer";
-import { deleteDeviceHandler, getDeviceByIDHandler, patchDeviceHandler, postDeviceHandler, getDevicesHandler, postDeviceFromJsonHandler, postDeviceFromExcelHandler, getDeviceBrandsHandler, getDeviceModelsHandler } from './Device/device';
-import { deleteClientByIDHandler, getClientByIDHandler, getClientsHandler, patchClientByIDHandler, postClientHandler } from './Client/client';
+import { deleteDeviceHandler, getDeviceByIDHandler, patchDeviceHandler, postDeviceHandler, getDevicesHandler, postDeviceFromJsonHandler, postDeviceFromExcelHandler, getDeviceBrandsHandler, getDeviceModelsHandler, postDeviceDummyHandler } from './Device/device';
+import { deleteClientByIDHandler, getClientByIDHandler, getClientsHandler, patchClientByIDHandler, postClientDummyHandler, postClientHandler } from './Client/client';
 import { deleteServiceHandler, getServiceByIDHandler, getServicesHandler, getTopNServicesByDeviceHandler, getTopNServicesByRevenueHandler, patchServiceHandler, postServiceHandler } from './Service/service';
 import { deleteWorkOrderHandler, getWorkOrdersByIDHandler, getWorkOrdersHandler, getWorkOrdersReportHandler, getWorkWordersByInterval as getWorkWordersByIntervalHandler, getWorkWordersOfToday as getWorkWordersOfTodayHandler, patchWorkOrderHandler, postWorkOrderHandler } from './WorkOrder/work-order';
 import { deleteTaskHandler, getTaskByIDHandler, getTasksHandler, patchTaskHandler, postTaskHandler } from './Task/task';
@@ -36,6 +36,9 @@ app.get("/client", getClientByIDHandler);
 /// endpoint to create new client
 app.post("/client", postClientHandler);
 
+/// endpoint to create a dummy client
+app.post("/client/dummy", postClientDummyHandler);
+
 /// endpoint to update client
 app.patch("/client", patchClientByIDHandler);
 
@@ -59,6 +62,9 @@ app.get("/device/models", getDeviceModelsHandler);
 
 /// endpoint to create new device
 app.post("/device", postDeviceHandler);
+
+/// endpoint to create a dummy device
+app.post("/device/dummy", postDeviceDummyHandler);
 
 app.post("/device/from-json", upload.single("file"), postDeviceFromJsonHandler);
 
@@ -118,10 +124,13 @@ app.delete("/task", deleteTaskHandler);
 /// endpoint to get all work orders
 app.get("/work-orders", getWorkOrdersHandler);
 
+/// endpoint to get today's work orders
 app.post("/work-orders/today", getWorkWordersOfTodayHandler);
 
+/// endpoint to get work orders by interval
 app.post("/work-orders/from-interval", getWorkWordersByIntervalHandler);
 
+/// endpoint to get work order reports given an interval
 app.post("/work-orders/report", getWorkOrdersReportHandler);
 
 /// endpoint for getting work order by id

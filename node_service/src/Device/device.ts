@@ -4,6 +4,7 @@ import { assert, object, string, nullable, size, refine, optional, number, unkno
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
 import Excel from 'exceljs';
+import { faker } from '@faker-js/faker';
 
 /// model for getting all devices
 const DevicesGet = object({
@@ -171,6 +172,40 @@ export async function postDeviceHandler(req: Request, res: Response, next: NextF
 
         /// return newly added device identifier
         return res.status(200).json({ id: device.id });
+
+    } catch (error) {
+        console.log("Error trying to insert new device: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Server Error, couldn't insert data into the database.",
+            type: HandlerErrors.DatabaseError
+        };
+
+        return res.status(500).json(errorRes);
+    }
+}
+
+/// endpoint to create a dummy device using faker
+export async function postDeviceDummyHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    /// create a dummy device using faker
+    let device = {
+        brand: faker.company.companyName(),
+        model: faker.commerce.productName(),
+        photoURL: faker.image.imageUrl(),
+        sku: faker.datatype.uuid(),
+        description: faker.lorem.paragraph(),
+    };
+
+    /// insert device in the database
+    try {
+        const newDevice = await prisma.device.create({
+            data: device
+        });
+
+        /// return newly added device identifier
+        return res.status(200).json({ id: newDevice.id });
 
     } catch (error) {
         console.log("Error trying to insert new device: ", error);

@@ -3,12 +3,12 @@ import { Request, Response, NextFunction } from "express";
 import { assert, object, string, nullable, optional, size, refine, omit, number } from 'superstruct'
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
-import { Prisma } from '@prisma/client'
 import { isEmail } from "../Validations/email";
 import { v4 as uuidv4 } from 'uuid';
 import { isCPF } from "../Validations/cpf";
 import { isCellphoneNumber, splitCellphoneNumber } from "../Validations/cellphone";
 import { isTelephoneNumber, splitTelephoneNumber } from "../Validations/telephone";
+import { faker } from '@faker-js/faker';
 
 /// model for getting all clients
 const ClientsGet = object({
@@ -394,6 +394,50 @@ export async function deleteClientByIDHandler(req: Request, res: Response, next:
 
         let errorRes: HandlerError = {
             message: "Server Error, couldn't find client by id.",
+            type: HandlerErrors.DatabaseError
+        };
+
+        return res.status(500).json(errorRes);
+    }
+}
+
+/// endpoint to create a dummy client using faker
+export async function postClientDummyHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    /// query database for client
+    try {
+        let firstName = faker.name.firstName();
+        let lastName = faker.name.lastName();
+        let name = `${firstName} ${lastName}`;
+        /// create client
+        let client = await prisma.client.create({
+            data: {
+                id: faker.datatype.uuid(),
+                firstName,
+                lastName,
+                name,
+                cpf: faker.datatype.number({ min: 10000000000, max: 99999999999 }).toString(),
+                Email: {
+                    create: {
+                        address: faker.internet.email()
+                    }
+                },
+                Phone: {
+                    create: {
+                        number: faker.phone.phoneNumber()
+                    }
+                }
+            }
+        });
+
+        /// return newly added client identifier
+        return res.status(200).json({ id: client.id });
+    } catch (error) {
+        console.log("Error trying to insert new client: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Server Error, couldn't insert data into the database.",
             type: HandlerErrors.DatabaseError
         };
 
