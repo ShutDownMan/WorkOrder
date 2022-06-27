@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="71,48" last-zoom="0.85" max-obj-count="12"
+<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="70,51" last-zoom="0.85" max-obj-count="12"
 	 default-schema="public" default-owner="adm"
 	 layers="Default layer"
 	 active-layers="0"
@@ -137,7 +137,7 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	</customidxs>
 </table>
 
-<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
 	<position x="1020" y="120"/>
@@ -153,13 +153,16 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	<column name="finishedAt">
 		<type name="timestamp" length="0"/>
 	</column>
+	<column name="totalCost">
+		<type name="money" length="0"/>
+	</column>
 	<constraint name="WorkOrder_pk" type="pk-constr" table="public.&quot;WorkOrder&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 
 	<customidxs object-type="column">
-		<object name="id_Client" index="4"/>
-		<object name="id_WorkOrderStatus" index="5"/>
+		<object name="id_Client" index="5"/>
+		<object name="id_WorkOrderStatus" index="6"/>
 	</customidxs>
 
 	<customidxs object-type="constraint">

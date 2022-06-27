@@ -56,6 +56,7 @@ CREATE TABLE public."WorkOrder" (
 	obs text,
 	"createdAt" timestamp with time zone NOT NULL DEFAULT NOW(),
 	"finishedAt" timestamp,
+	"totalCost" money,
 	"id_Client" uuid,
 	"id_WorkOrderStatus" integer NOT NULL,
 	CONSTRAINT "WorkOrder_pk" PRIMARY KEY (id)
