@@ -27,21 +27,28 @@ app.listen(port, () => {
 
 /// Client Handlers
 
+/// endpoint to get all clients
 app.get("/clients", getClientsHandler);
 
+/// endpoint to get client by id
 app.get("/client", getClientByIDHandler);
 
+/// endpoint to create new client
 app.post("/client", postClientHandler);
 
+/// endpoint to update client
 app.patch("/client", patchClientByIDHandler);
 
+/// endpoint to delete client
 app.delete("/client", deleteClientByIDHandler);
 
 
 /// Device Handlers
 
+/// endpoint to get all devices
 app.get("/devices", getDevicesHandler);
 
+/// endpoint to get device by id
 app.get("/device", getDeviceByIDHandler);
 
 /// get all device brands
@@ -50,31 +57,41 @@ app.get("/device/brands", getDeviceBrandsHandler);
 /// get all models from a device brand
 app.get("/device/models", getDeviceModelsHandler);
 
+/// endpoint to create new device
 app.post("/device", postDeviceHandler);
 
 app.post("/device/from-json", upload.single("file"), postDeviceFromJsonHandler);
 
 app.post("/device/from-excel", upload.single("file"), postDeviceFromExcelHandler);
 
+/// endpoint to update device
 app.patch("/device", patchDeviceHandler);
 
+/// endpoint to delete device
 app.delete("/device", deleteDeviceHandler);
 
 
 /// Service Handlers
 
+/// endpoint to get all services
 app.get("/services", getServicesHandler);
 
+/// endpoint to get top n services by device
 app.post("/services/by-device", getTopNServicesByDeviceHandler);
 
+/// endpoint to get top n services by revenue
 app.post("/services/by-revenue", getTopNServicesByRevenueHandler);
 
+/// endpoint to get service by id
 app.get("/service", getServiceByIDHandler);
 
+/// endpoint to create new service
 app.post("/service", postServiceHandler);
 
+/// endpoint to update service
 app.patch("/service", patchServiceHandler);
 
+/// endpoint to delete service
 app.delete("/service", deleteServiceHandler);
 
 
@@ -114,7 +131,6 @@ app.get("/work-order", getWorkOrdersByIDHandler);
 app.post("/work-order", postWorkOrderHandler);
 
 /// endpoint for updating work order
-/// TODO: make possible to update starting date
 app.patch("/work-order", patchWorkOrderHandler);
 
 /// endpoint for deleting work order
