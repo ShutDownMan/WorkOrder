@@ -60,6 +60,7 @@ model WorkOrder {
   obs                String?
   createdAt          DateTime        @default(now()) @db.Timestamptz(6)
   finishedAt         DateTime?       @db.Timestamp(6)
+  totalCost          Decimal?        @db.Money
   id_Client          String?         @db.Uuid
   id_WorkOrderStatus Int
   Client             Client?         @relation(fields: [id_Client], references: [id], map: "Client_fk")

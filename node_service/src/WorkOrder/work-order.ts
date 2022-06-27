@@ -303,6 +303,8 @@ export async function postWorkOrderHandler(req: Request, res: Response, next: Ne
             }
         }
 
+        await calculateWorkOrderTotalCost(workOrder.id);
+
         /// return newly added workOrder identifier
         return res.status(200).json({ id: workOrder.id });
 
@@ -316,7 +318,58 @@ export async function postWorkOrderHandler(req: Request, res: Response, next: Ne
 
         return res.status(500).json(errorRes);
     }
+
+    /// unreachable
 }
+
+/// calculate the total cost of a workOrder
+async function calculateWorkOrderTotalCost(workOrderID: string): Promise<any> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    /// get all tasks of the workOrder
+    let tasks = await prisma.task.findMany({
+        where: {
+            WorkOrder: {
+                id: workOrderID
+            }
+        },
+        select: {
+            id: true,
+            description: true,
+            Task_Service: {
+                select: {
+                    id: true,
+                    Service: {
+                        select: {
+                            id: true,
+                            estimatedMaterialCost: true,
+                            estimatedTimeCost: true,
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    /// calculate the total cost of the workOrder
+    let totalCost = 0;
+    for (let task of tasks) {
+        for (let taskService of task.Task_Service) {
+            totalCost += Number(taskService.Service.estimatedMaterialCost) + Number(taskService.Service.estimatedTimeCost) * 14.5;
+        }
+    }
+
+    /// update the total cost of the workOrder
+    await prisma.workOrder.update({
+        where: {
+            id: workOrderID
+        },
+        data: {
+            totalCost: totalCost
+        }
+    });
+}
+
 
 export async function patchWorkOrderHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     /// validate input

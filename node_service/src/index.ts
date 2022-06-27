@@ -48,7 +48,7 @@ app.get("/device", getDeviceByIDHandler);
 app.get("/device/brands", getDeviceBrandsHandler);
 
 /// get all models from a device brand
-app.get("/device/model", getDeviceModelsHandler);
+app.get("/device/models", getDeviceModelsHandler);
 
 app.post("/device", postDeviceHandler);
 
