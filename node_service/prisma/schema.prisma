@@ -46,6 +46,8 @@ model Task {
   description  String?
   timeCost     Int?
   materialCost Decimal?       @db.Money
+  createdAt    DateTime       @default(now()) @db.Timestamp(6)
+  finishedAt   DateTime?      @db.Timestamp(6)
   id_Device    Int
   id_WorkOrder String         @db.Uuid
   Device       Device         @relation(fields: [id_Device], references: [id], map: "Device_fk")
@@ -56,9 +58,10 @@ model Task {
 model WorkOrder {
   id                 String          @id(map: "WorkOrder_pk") @db.Uuid
   obs                String?
+  createdAt          DateTime        @default(now()) @db.Timestamptz(6)
+  finishedAt         DateTime?       @db.Timestamp(6)
   id_Client          String?         @db.Uuid
   id_WorkOrderStatus Int
-  createdAt          DateTime?       @default(now()) @db.Timestamptz(6)
   Client             Client?         @relation(fields: [id_Client], references: [id], map: "Client_fk")
   WorkOrderStatus    WorkOrderStatus @relation(fields: [id_WorkOrderStatus], references: [id], map: "WorkOrderStatus_fk")
   Task               Task[]

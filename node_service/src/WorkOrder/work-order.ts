@@ -4,6 +4,7 @@ import { assert, object, string, array, optional, number } from 'superstruct'
 import { HandlerError, HandlerErrors } from "../HandlerError/handler-error";
 import PrismaGlobal from "../prisma";
 import { v4 as uuidv4 } from 'uuid';
+import lodash from "lodash";
 
 export enum WorkOrderStatusList {
     APROVACAO = 1,
@@ -17,6 +18,16 @@ const WorkOrdersGet = object({
     take: optional(number()),
     page: optional(number()),
 });
+
+/// model for getting workoders of an interval
+const WorkOrdersGetInterval = object({
+    startDate: number(),
+    endDate: number(),
+    clientID: optional(string()),
+    take: optional(number()),
+    page: optional(number()),
+});
+
 
 /// model for workOrder get by id
 const WorkOrderGetID = object({
@@ -62,6 +73,15 @@ const WorkOrderPatchingModel = object({
     }))
 });
 
+/// WorkOrder model to get report by period
+const WorkOrdersReportModel = object({
+    startDate: number(),
+    endDate: number(),
+    clientID: optional(string()),
+    take: optional(number()),
+    page: optional(number()),
+});
+
 export async function getWorkOrdersHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
 
@@ -100,6 +120,7 @@ export async function getWorkOrdersHandler(req: Request, res: Response, next: Ne
                 Client: {
                     select: {
                         id: true,
+                        name: true,
                     }
                 },
                 Task: {
@@ -525,5 +546,141 @@ export async function getWorkWordersOfToday(req: Request, res: Response, next: N
         };
 
         return res.status(403).json(errorRes);
+    }
+}
+
+/// get all workOrders by Interval
+export async function getWorkWordersByInterval(req: Request, res: Response, next: NextFunction) {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    let reqBody = req.body;
+    /// validate input
+    try {
+        assert(reqBody, WorkOrdersGetInterval);
+    } catch (error) {
+        console.log("Error trying to get workOrders: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(403).json(errorRes);
+    }
+
+    let { clientID, startDate, endDate, take, page } = reqBody;
+
+    /// get all workOrders from interval
+    try {
+        /// fetch from the database the workOrders inside the given interval
+        const workOrders = await prisma.workOrder.findMany({
+            where: {
+                ...(clientID ? { idClient: clientID } : {}),
+                createdAt: {
+                    gte: new Date(startDate),
+                    lte: new Date(endDate),
+                },
+            },
+            take,
+            ...(page && take ? { skip: (page - 1) * take } : {}),
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+
+        let dayGroupedWorkOrders = lodash.groupBy(workOrders, (workOrder) => {
+            return new Date(workOrder.createdAt || 0).toLocaleDateString();
+        });
+
+        let workOrdersByDay = Object.keys(dayGroupedWorkOrders).map((key) => {
+            return {
+                day: key,
+                workOrders: dayGroupedWorkOrders[key],
+                count: dayGroupedWorkOrders[key].length,
+            };
+        });
+
+        return res.json(workOrdersByDay);
+    } catch (error) {
+        console.log("Error trying to get workOrders: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(500).json(errorRes);
+    }
+}
+
+/// get workOrders report from interval
+export async function getWorkOrdersReportHandler(req: Request, res: Response, next: NextFunction) {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    let reqBody = req.body;
+    /// validate input
+    try {
+        assert(reqBody, WorkOrdersReportModel);
+    } catch (error) {
+        console.log("Error trying to get workOrders report: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(403).json(errorRes);
+    }
+
+    let { clientID, startDate, endDate } = reqBody;
+
+    /// get workOrders report from interval
+    try {
+        /// fetch from the database the workOrders inside the given interval
+        const workOrders = await prisma.workOrder.findMany({
+            where: {
+                ...(clientID ? { idClient: clientID } : {}),
+                createdAt: {
+                    gte: new Date(startDate),
+                    lte: new Date(endDate),
+                },
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+            include: {
+                Task: true
+            }
+        });
+
+        let workOrdersRevenue = workOrders.reduce((acc, workOrder) => {
+            return acc + workOrder.Task.reduce((acc, task) => {
+                return acc + Number(task.materialCost);
+            }, 0);
+        }, 0);
+
+        /// set the workOrder report
+        return res.json({
+            count: workOrders.length,
+            revenue: workOrdersRevenue,
+            average_revenue: workOrdersRevenue / workOrders.length,
+            average_attendances: workOrders.length / (startDate - startDate) / (1000 * 60 * 60 * 24),
+            average_time_to_complete: workOrders
+                .filter(workOrder => workOrder.finishedAt)
+                .reduce((acc, workOrder) => {
+                    /// calculate time to complete a workOrder
+                    let timeToComplete = (new Date(workOrder.finishedAt || 0).getTime() - new Date(workOrder.createdAt).getTime()) / (1000 * 60 * 60 * 24);
+                    return acc + timeToComplete;
+                }, 0) / workOrders.length,
+        });
+    } catch (error) {
+        console.log("Error trying to get workOrders revenue: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(500).json(errorRes);
     }
 }

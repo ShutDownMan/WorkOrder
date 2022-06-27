@@ -54,9 +54,10 @@ ALTER TABLE public."Email" OWNER TO adm;
 CREATE TABLE public."WorkOrder" (
 	id uuid NOT NULL,
 	obs text,
+	"createdAt" timestamp with time zone NOT NULL DEFAULT NOW(),
+	"finishedAt" timestamp,
 	"id_Client" uuid,
 	"id_WorkOrderStatus" integer NOT NULL,
-	"createdAt" timestamp with time zone DEFAULT NOW(),
 	CONSTRAINT "WorkOrder_pk" PRIMARY KEY (id)
 );
 -- ddl-end --
@@ -70,6 +71,8 @@ CREATE TABLE public."Task" (
 	description text,
 	"timeCost" integer,
 	"materialCost" money,
+	"createdAt" timestamp NOT NULL DEFAULT NOW(),
+	"finishedAt" timestamp,
 	"id_Device" integer NOT NULL,
 	"id_WorkOrder" uuid NOT NULL,
 	CONSTRAINT "WorkOrderTask_pk" PRIMARY KEY (id)

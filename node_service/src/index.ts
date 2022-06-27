@@ -1,10 +1,10 @@
 import express, { Express } from 'express';
 import cors from 'cors';
 import multer from "multer";
-import { deleteDeviceHandler, getDeviceByIDHandler, patchDeviceHandler, postDeviceHandler, getDevicesHandler, postDeviceFromJsonHandler, postDeviceFromExcelHandler } from './Device/device';
+import { deleteDeviceHandler, getDeviceByIDHandler, patchDeviceHandler, postDeviceHandler, getDevicesHandler, postDeviceFromJsonHandler, postDeviceFromExcelHandler, getDeviceBrandsHandler, getDeviceModelsHandler } from './Device/device';
 import { deleteClientByIDHandler, getClientByIDHandler, getClientsHandler, patchClientByIDHandler, postClientHandler } from './Client/client';
-import { deleteServiceHandler, getServiceByIDHandler, getServicesHandler, getTopNServicesByDeviceHandler, patchServiceHandler, postServiceHandler } from './Service/service';
-import { deleteWorkOrderHandler, getWorkOrdersByIDHandler, getWorkOrdersHandler, getWorkWordersOfToday, patchWorkOrderHandler, postWorkOrderHandler } from './WorkOrder/work-order';
+import { deleteServiceHandler, getServiceByIDHandler, getServicesHandler, getTopNServicesByDeviceHandler, getTopNServicesByRevenueHandler, patchServiceHandler, postServiceHandler } from './Service/service';
+import { deleteWorkOrderHandler, getWorkOrdersByIDHandler, getWorkOrdersHandler, getWorkOrdersReportHandler, getWorkWordersByInterval as getWorkWordersByIntervalHandler, getWorkWordersOfToday as getWorkWordersOfTodayHandler, patchWorkOrderHandler, postWorkOrderHandler } from './WorkOrder/work-order';
 import { deleteTaskHandler, getTaskByIDHandler, getTasksHandler, patchTaskHandler, postTaskHandler } from './Task/task';
 
 const app: Express = express();
@@ -44,6 +44,12 @@ app.get("/devices", getDevicesHandler);
 
 app.get("/device", getDeviceByIDHandler);
 
+/// get all device brands
+app.get("/device/brands", getDeviceBrandsHandler);
+
+/// get all models from a device brand
+app.get("/device/model", getDeviceModelsHandler);
+
 app.post("/device", postDeviceHandler);
 
 app.post("/device/from-json", upload.single("file"), postDeviceFromJsonHandler);
@@ -59,7 +65,9 @@ app.delete("/device", deleteDeviceHandler);
 
 app.get("/services", getServicesHandler);
 
-app.get("/services/top", getTopNServicesByDeviceHandler);
+app.post("/services/by-device", getTopNServicesByDeviceHandler);
+
+app.post("/services/by-revenue", getTopNServicesByRevenueHandler);
 
 app.get("/service", getServiceByIDHandler);
 
@@ -70,7 +78,7 @@ app.patch("/service", patchServiceHandler);
 app.delete("/service", deleteServiceHandler);
 
 
-// /// Task Handlers
+/// Task Handlers
 
 app.get("/tasks", getTasksHandler);
 
@@ -87,12 +95,18 @@ app.delete("/task", deleteTaskHandler);
 
 app.get("/work-orders", getWorkOrdersHandler);
 
-app.get("/work-orders/today", getWorkWordersOfToday);
+app.post("/work-orders/today", getWorkWordersOfTodayHandler);
+
+app.post("/work-orders/from-interval", getWorkWordersByIntervalHandler);
+
+app.post("/work-orders/report", getWorkOrdersReportHandler);
 
 app.get("/work-order", getWorkOrdersByIDHandler);
 
+/// TODO: calculate cost on insert
 app.post("/work-order", postWorkOrderHandler);
 
+/// TODO: update finish date on update
 app.patch("/work-order", patchWorkOrderHandler);
 
 app.delete("/work-order", deleteWorkOrderHandler);

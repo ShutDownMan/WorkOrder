@@ -38,6 +38,12 @@ const DevicePatchingModel = object({
     description: optional(string()),
 });
 
+const DeviceModelsFromBrandModel = object({
+    brand: string(),
+    take: optional(number()),
+    page: optional(number()),
+});
+
 export async function getDevicesHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
 
@@ -425,6 +431,79 @@ export async function deleteDeviceHandler(req: Request, res: Response, next: Nex
 
         let errorRes: HandlerError = {
             message: "Server Error, couldn't find device by id.",
+            type: HandlerErrors.DatabaseError
+        };
+
+        return res.status(500).json(errorRes);
+    }
+}
+
+/// get all devices brands
+export async function getDeviceBrandsHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    /// query database for device brands
+    try {
+        let deviceBrands = await prisma.device.findMany({
+            select: {   
+                brand: true
+            },
+            distinct: ["brand"]
+        });
+
+        /// return device brands
+        return res.status(200).json(deviceBrands.map(deviceBrand => deviceBrand.brand));
+    } catch (error) {
+        console.log("Error trying to get device brands: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Server Error, couldn't find device brands.",
+            type: HandlerErrors.DatabaseError
+        };
+
+        return res.status(500).json(errorRes);
+    }
+}
+
+/// get all models from device brand
+export async function getDeviceModelsHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    /// validate input
+    let reqQuery = req.query;
+    /// validate input
+    try {
+        assert(reqQuery, DeviceModelsFromBrandModel);
+    } catch (error) {
+        console.log("Error trying to get device by ID: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(403).json(errorRes);
+    }
+
+    /// query database for device models
+    try {
+        let deviceModels = await prisma.device.findMany({
+            where: {
+                brand: reqQuery.brand
+            },
+            select: {
+                model: true
+            },
+            distinct: ["model"]
+        });
+
+        /// return device models
+        return res.status(200).json(deviceModels.map(deviceModel => deviceModel.model));
+    } catch (error) {
+        console.log("Error trying to get device models: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Server Error, couldn't find device models.",
             type: HandlerErrors.DatabaseError
         };
 

@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="0,888" last-zoom="1.45" max-obj-count="12"
+<dbmodel pgmodeler-ver="1.0.0-alpha" use-changelog="false" author="Jedson Gabriel" last-position="71,48" last-zoom="0.85" max-obj-count="12"
 	 default-schema="public" default-owner="adm"
 	 layers="Default layer"
 	 active-layers="0"
@@ -21,7 +21,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </role>
 
 <database name="WorkOrderDB" is-template="false" allow-conns="true" append-at-eod="true">
-	<appended-sql> <![CDATA[
+	<appended-sql><![CDATA[
 INSERT INTO public."PhoneType" ("description") VALUES ('Celular'), ('Telefone Fixo');
 
 INSERT INTO public."Client" ("id", "firstName", "lastName", "name", "cpf") VALUES ('12f31849-4cc0-4588-9620-76592a8bb908', 'Miguel', 'Oliveira Alves', 'Miguel Oliveira Alves', '321.222.333-78');
@@ -41,7 +41,7 @@ INSERT INTO public."Service" ("description", "estimatedMaterialCost", "estimated
 ('Troca de Flex Cable', 50.87 , 60);
 
 INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), ('Em andamento'), ('Finalizado');
-]]> </appended-sql>
+]]></appended-sql>
 </database>
 
 <schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
@@ -137,26 +137,29 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	</customidxs>
 </table>
 
-<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+<table name="WorkOrder" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
-	<position x="1020" y="140"/>
+	<position x="1020" y="120"/>
 	<column name="id" not-null="true">
 		<type name="uuid" length="0"/>
 	</column>
 	<column name="obs">
 		<type name="text" length="0"/>
 	</column>
-	<column name="createdAt" default-value="NOW()">
+	<column name="createdAt" not-null="true" default-value="NOW()">
 		<type name="timestamp with time zone" length="0" with-timezone="true"/>
+	</column>
+	<column name="finishedAt">
+		<type name="timestamp" length="0"/>
 	</column>
 	<constraint name="WorkOrder_pk" type="pk-constr" table="public.&quot;WorkOrder&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 
 	<customidxs object-type="column">
-		<object name="id_Client" index="2"/>
-		<object name="id_WorkOrderStatus" index="3"/>
+		<object name="id_Client" index="4"/>
+		<object name="id_WorkOrderStatus" index="5"/>
 	</customidxs>
 
 	<customidxs object-type="constraint">
@@ -165,7 +168,7 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	</customidxs>
 </table>
 
-<table name="Task" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+<table name="Task" layers="0" collapse-mode="2" max-obj-count="9" z-value="0">
 	<schema name="public"/>
 	<role name="adm"/>
 	<position x="1040" y="580"/>
@@ -181,13 +184,19 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	<column name="materialCost">
 		<type name="money" length="0"/>
 	</column>
+	<column name="createdAt" not-null="true" default-value="NOW()">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="finishedAt">
+		<type name="timestamp" length="0"/>
+	</column>
 	<constraint name="WorkOrderTask_pk" type="pk-constr" table="public.&quot;Task&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 
 	<customidxs object-type="column">
-		<object name="id_Device" index="4"/>
-		<object name="id_WorkOrder" index="5"/>
+		<object name="id_Device" index="6"/>
+		<object name="id_WorkOrder" index="7"/>
 	</customidxs>
 
 	<customidxs object-type="constraint">
@@ -278,11 +287,11 @@ INSERT INTO public."WorkOrderStatus" ("description") VALUES ('Em aprovação'), 
 	</column>
 	<column name="estimatedTimeCost">
 		<type name="integer" length="0"/>
-		<comment> <![CDATA[Time estimated, in hours, to complete the service.]]> </comment>
+		<comment><![CDATA[Time estimated, in hours, to complete the service.]]></comment>
 	</column>
 	<column name="estimatedMaterialCost">
 		<type name="money" length="0"/>
-		<comment> <![CDATA[Cost in materials to complete the service.]]> </comment>
+		<comment><![CDATA[Cost in materials to complete the service.]]></comment>
 	</column>
 	<constraint name="Service_pk" type="pk-constr" table="public.&quot;Service&quot;">
 		<columns names="id" ref-type="src-columns"/>
