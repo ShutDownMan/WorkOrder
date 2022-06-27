@@ -103,7 +103,7 @@ app.post("/work-orders/report", getWorkOrdersReportHandler);
 
 app.get("/work-order", getWorkOrdersByIDHandler);
 
-/// TODO: calculate cost on insert
+/// calculate cost on insert
 app.post("/work-order", postWorkOrderHandler);
 
 /// TODO: update finish date on update

@@ -685,6 +685,7 @@ export async function getWorkOrdersReportHandler(req: Request, res: Response, ne
         return res.status(403).json(errorRes);
     }
 
+    /// explode 
     let { clientID, startDate, endDate } = reqBody;
 
     /// get workOrders report from interval
@@ -707,9 +708,7 @@ export async function getWorkOrdersReportHandler(req: Request, res: Response, ne
         });
 
         let workOrdersRevenue = workOrders.reduce((acc, workOrder) => {
-            return acc + workOrder.Task.reduce((acc, task) => {
-                return acc + Number(task.materialCost);
-            }, 0);
+            return acc + Number(workOrder.totalCost)
         }, 0);
 
         /// set the workOrder report
