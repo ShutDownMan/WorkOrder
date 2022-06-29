@@ -27,6 +27,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PORT: ${POSTGRES_PORT}
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}
+      TZ: America/Sao_Paulo
+
   # pentaho:
   #     container_name: pentaho
   #     image: ca0abinary/docker-pentaho

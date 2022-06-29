@@ -75,7 +75,7 @@ const WorkOrderPatchingModel = object({
         id: number(),
     })),
     startDate: optional(number()),
-    finishedDate: optional(number()),
+    finishedAt: optional(number()),
 });
 
 /// WorkOrder model to get report by period
@@ -588,8 +588,8 @@ export async function patchWorkOrderHandler(req: Request, res: Response, next: N
                 startDate: workOrderUpdates.startDate,
             }),
             /// update finished date if one was passed
-            ...(workOrderUpdates.finishedDate && {
-                finishedDate: workOrderUpdates.finishedDate,
+            ...(workOrderUpdates.finishedAt && {
+                finishedAt: new Date(workOrderUpdates.finishedAt),
             }),
         };
 
