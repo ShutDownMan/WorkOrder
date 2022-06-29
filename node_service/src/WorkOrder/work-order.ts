@@ -32,7 +32,6 @@ const WorkOrdersGetInterval = object({
     page: optional(number()),
 });
 
-
 /// model for workOrder get by id
 const WorkOrderGetID = object({
     id: string(),
@@ -88,6 +87,12 @@ const WorkOrdersReportModel = object({
     page: optional(number()),
 });
 
+const WorkOrdersForecastModel = object({
+    lookbackPredictionDate: optional(number()),
+    lookforwardPredictionDate: optional(number()),
+});
+
+
 export async function getWorkOrdersHandler(req: Request, res: Response, next: NextFunction): Promise<any> {
     const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
 
@@ -123,6 +128,7 @@ export async function getWorkOrdersHandler(req: Request, res: Response, next: Ne
             select: {
                 id: true,
                 obs: true,
+                createdAt: true,
                 Client: {
                     select: {
                         id: true,
@@ -136,6 +142,7 @@ export async function getWorkOrdersHandler(req: Request, res: Response, next: Ne
                 },
                 WorkOrderStatus: {
                     select: {
+                        id: true,
                         description: true,
                     }
                 },
@@ -381,6 +388,9 @@ async function calculateWorkOrderTotalCost(workOrderID: string): Promise<any> {
         }
     }
 
+    /// divide by 10 and round to 2 decimal places
+    // totalCost = Math.round(totalCost * 100) / 1000;
+
     /// update the total cost of the workOrder
     await prisma.workOrder.update({
         where: {
@@ -403,6 +413,9 @@ export async function postDummyWorkOrderHandler(req: Request, res: Response, nex
         client: (await getRandomClient()),
     };
 
+    /// set a random createdAt date for the workOrder
+    let createdAt = faker.date.recent(12);
+
     let workOrder;
     try {
         /// insert dummy workOrder in the database using prisma
@@ -421,6 +434,15 @@ export async function postDummyWorkOrderHandler(req: Request, res: Response, nex
                         id: 1,
                     }
                 },
+            }
+        });
+
+        await prisma.workOrder.update({
+            where: {
+                id: dummyWorkOrder.id
+            },
+            data: {
+                createdAt,
             }
         });
 
@@ -484,6 +506,7 @@ export async function postDummyWorkOrderHandler(req: Request, res: Response, nex
                     description: faker.lorem.sentence(),
                     timeCost: totalTimeCost,
                     materialCost: totalMaterialCost,
+                    createdAt,
                     WorkOrder: {
                         connect: {
                             id: dummyWorkOrder.id,
@@ -887,6 +910,75 @@ export async function getWorkOrdersReportHandler(req: Request, res: Response, ne
         });
     } catch (error) {
         console.log("Error trying to get workOrders revenue: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(500).json(errorRes);
+    }
+}
+
+
+/// get forecast of how many workOrders will be created in the next month
+export async function getWorkOrdersForecastHandler(req: Request, res: Response, next: NextFunction) {
+    const prisma: PrismaClient = PrismaGlobal.getInstance().prisma;
+
+    let reqBody = req.body;
+    /// validate input
+    try {
+        assert(reqBody, WorkOrdersForecastModel);
+    } catch (error) {
+        console.log("Error trying to get workOrders forecast: ", error);
+
+        let errorRes: HandlerError = {
+            message: "Bad Request, couldn't validate data.",
+            type: HandlerErrors.ValidationError
+        };
+
+        return res.status(403).json(errorRes);
+    }
+
+    let { lookbackPredictionDate, lookforwardPredictionDate } = reqBody;
+
+    let now = new Date();
+    let lookbackDate = new Date(lookbackPredictionDate || now.getTime() - (1000 * 60 * 60 * 24 * 30));
+    let lookforwardDate = new Date(lookforwardPredictionDate || now.getTime() + (1000 * 60 * 60 * 24 * 180));
+
+    /// estimate how many workOrders will be created in the next month
+    try {
+        /// fetch from the database the workOrders inside the given interval
+        const workOrders = await prisma.workOrder.findMany({
+            where: {
+                createdAt: {
+                    gte: lookbackDate,
+                    lte: now
+                },
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+            include: {
+                Task: true
+            }
+        });
+
+        /// get forecast
+        let days_between_past = (lookbackDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+        let days_between_future = (now.getTime() - lookforwardDate.getTime()) / (1000 * 60 * 60 * 24);
+        let average_forecast = workOrders.length / days_between_past * days_between_future;
+
+        /// return the forecast
+        /// the forecast is the number of work orders created daily multiplied by the number of days between now and lookforward dates
+        return res.json({
+            count: workOrders.length,
+            low_forecast: average_forecast * 0.9,
+            average_forecast,
+            high_forecast: average_forecast * 1.1,
+        });
+    } catch (error) {
+        console.log("Error trying to get workOrders forecast: ", error);
 
         let errorRes: HandlerError = {
             message: "Bad Request, couldn't validate data.",
