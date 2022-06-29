@@ -463,22 +463,7 @@ export async function getRandomClient(): Promise<Client | HandlerError> {
 
         return errorRes;
     }
-
-    // try {
-    //     /// assert the query was sucessful
-    //     assert(client, partial({ id: string() }));
-    // } catch (error) {
-    //     /// error trying to fetch a random client
-    //     console.log("Error trying to fetch a random client: ", error);
-
-    //     let errorRes: HandlerError = {
-    //         message: "Server Error, couldn't fetch a random client.",
-    //         type: HandlerErrors.DatabaseError
-    //     };
-
-    //     return errorRes;
-    // }
-
+    
     /// return the random client
     return client[0];
 }

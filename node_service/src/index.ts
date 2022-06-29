@@ -146,7 +146,6 @@ app.get("/work-order", getWorkOrdersByIDHandler);
 app.post("/work-orders/forecast", getWorkOrdersForecastHandler);
 
 /// endpoint to update work order
-/// TODO: update finished date when status changes to finished
 app.post("/work-order", postWorkOrderHandler);
 
 /// enpoint to insert a new dummy work order
