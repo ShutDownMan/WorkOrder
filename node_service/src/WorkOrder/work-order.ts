@@ -877,10 +877,16 @@ export async function getWorkOrdersReportHandler(req: Request, res: Response, ne
         const workOrders = await prisma.workOrder.findMany({
             where: {
                 ...(clientID ? { idClient: clientID } : {}),
-                createdAt: {
-                    gte: new Date(startDate),
-                    lte: new Date(endDate),
-                },
+                OR: {
+                    createdAt: {
+                        gte: new Date(startDate),
+                        lte: new Date(endDate),
+                    },
+                    finishedAt: {
+                        gte: new Date(startDate),
+                        lte: new Date(endDate),
+                    },
+                }
             },
             orderBy: {
                 createdAt: "desc",
