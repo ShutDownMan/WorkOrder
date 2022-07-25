@@ -4,7 +4,7 @@ services:
     container_name: postgres
     image: postgres:alpine
     ports:
-      - 5442:${POSTGRES_PORT}
+      - 5443:${POSTGRES_PORT}
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -19,7 +19,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - 3000:3000
+      - 3001:3001
     environment:
       NODE_PORT: 3001
       POSTGRES_HOST: postgres
