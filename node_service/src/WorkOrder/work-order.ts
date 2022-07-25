@@ -905,7 +905,7 @@ export async function getWorkOrdersReportHandler(req: Request, res: Response, ne
             count: workOrders.length,
             revenue: workOrdersRevenue,
             average_revenue: workOrdersRevenue / workOrders.length,
-            average_attendances: workOrders.length / (endDate - startDate) / (1000 * 60 * 60 * 24),
+            average_attendances: workOrders.length / ((endDate - startDate) / (1000 * 60 * 60 * 24)),
             average_time_to_complete: workOrders
                 .filter(workOrder => workOrder.finishedAt)
                 .reduce((acc, workOrder) => {
@@ -970,15 +970,20 @@ export async function getWorkOrdersForecastHandler(req: Request, res: Response, 
             }
         });
 
+        let workOrdersRevenue = workOrders.reduce((acc, workOrder) => {
+            return acc + Number(workOrder.totalCost)
+        }, 0);
+
         /// get forecast
         let days_between_past = (lookbackDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
         let days_between_future = (now.getTime() - lookforwardDate.getTime()) / (1000 * 60 * 60 * 24);
-        let average_forecast = workOrders.length / days_between_past * days_between_future;
+        let average_forecast = workOrdersRevenue / days_between_past * days_between_future;
 
         /// return the forecast
         /// the forecast is the number of work orders created daily multiplied by the number of days between now and lookforward dates
         return res.json({
             count: workOrders.length,
+            // revenue: workOrdersRevenue,
             low_forecast: average_forecast * 0.9,
             average_forecast,
             high_forecast: average_forecast * 1.1,
